@@ -30,7 +30,7 @@ const Header: React.FC = () => {
              className="hover:text-gray-800 font-semibold hover:underline">Home
           </Link>
           <Link href="/products"
-            className="hover:text-gray-800 font-semibold hover:underline">Shope
+            className="hover:text-gray-800 font-semibold hover:underline">Shop
           </Link>
           <Link href="/blog"
             className="hover:text-gray-800 font-semibold hover:underline">Blog
@@ -96,7 +96,7 @@ const Header: React.FC = () => {
               Home
             </Link>
             <Link href="/products" className="block hover:text-gray-800 hover:underline text-center" onClick={toggleMenu}>
-              Shope
+              Shop
             </Link>
             <Link href="/blog" className="block hover:text-gray-800 hover:underline text-center" onClick={toggleMenu}>
               Blog
