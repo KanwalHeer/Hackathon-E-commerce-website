@@ -9,8 +9,11 @@
       <div>
         <HomeBanner/>
         <HomeItems/>
+        <h1 className="text-3xl font-bold text-center">Our Products</h1>
         <HomeProduct/>
         <ExploreSectio/>
+        <p className="text-center text-gray-500 text-sm mt-8">Share your setup with</p>
+        <h1 className="text-3xl font-bold text-center">#FurniroFurniture</h1>
         <ImageDisplay/>
       </div>
     )

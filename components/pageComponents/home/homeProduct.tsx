@@ -13,7 +13,7 @@ export default function Homeproducts() {
 
   return (
     <div className="px-4">
-      <h1 className="text-2xl font-semibold text-center">Related Products</h1>
+      
 
       {/* Pass products and itemsPerPage to the ProductGrid */}
       <ProductGrid products={products} itemsPerPage={8} />

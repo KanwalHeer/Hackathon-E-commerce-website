@@ -4,6 +4,7 @@ import Image from "next/image";
 export default function ImageDisplay() {
   return (
     <div className=" flex gap-2 justify-center max-w-[1200px] mx-auto mt-14 px-4">
+     
       {/* Section 1 */}
       <div className="space-y-4">
         {/* Sub Section 1 */}
