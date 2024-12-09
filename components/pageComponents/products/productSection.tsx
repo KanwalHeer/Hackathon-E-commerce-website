@@ -5,7 +5,7 @@ import { BsViewList } from "react-icons/bs";
 
 export default function ProductSection() {
   return (
-    <div className="max-w-screen-2xl mx-auto py-8 bg-pink-100 my-12">
+    <div className="max-w-screen-2xl mx-auto py-8 bg-yellow-50 my-12">
       <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row justify-between px-4">
         {/* Section 1 */}
         <section className="flex justify-center gap-4 sm:gap-6 mb-4 sm:mb-0">
