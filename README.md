@@ -26,7 +26,7 @@ The furniture store platform provides users with a seamless online shopping expe
 
 ## Tech Stack
 
-- **Frontend**: Next.js, TypeScript
+- **Frontend**: Next.js, TypeScript , Redux , Tailwind css
 - **Backend**: Sanity CMS
 - **Payment**: Stripe API
 - **Shipment**: ShipEngine API
