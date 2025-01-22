@@ -1,10 +1,9 @@
+
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/globalComponents/header/page";
 import Footer from "@/components/globalComponents/footer/page";
-
-const inter = Inter({ subsets: ["latin"] });
+import ClientLayout from "@/components/reduxProvider/reduxProvider"; 
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,11 +17,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className} >
-        <Header/>
-        {children}
-        <Footer/>
+      <ClientLayout> 
+        <body>
+          <Header />
+          {children}
+          <Footer />
         </body>
+      </ClientLayout>
     </html>
   );
 }

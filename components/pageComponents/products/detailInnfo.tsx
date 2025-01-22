@@ -2,48 +2,27 @@
 import React, { useState } from "react";
 import Image from "next/image";
 
-// Type definitions
-type Review = {
-  user: string;
-  rating: number;
-  reviewText: string;
-};
-
-type AdditionalInfo = {
-  material: string;
-  warranty: string;
-  shippingInfo: string;
-  careInstructions: string;
-  origin: string;
-  assemblyRequired: string;
-};
-
-interface ProductDetailProps {
-  product: {
-    id: string;
-    image: string;
-    name1: string;
-    name2: string;
-    price: string;
-    status: string;
-    discount: number;
-    reviews: number;
-    description: string;
-    reviewDetail: Review[];
-    sizes: string[];
-    colors: string[];
-    images: string[];
-    sku: string;
-    tags: string[];
-    category: string;
-    detailDescription: string[];
-    detailImages: string[];
-    additionalInfo: AdditionalInfo;
+/// types.ts
+export interface ProductImage {
+  asset: {
+    _id: string;
+    url: string;
   };
 }
 
+export interface Product {
+  _id: string;
+  title: string;
+  description: string;
+  productImage: ProductImage;
+  price: number;
+  tags: string[];
+  dicountPercentage?: number; // Optional field
+  isNew?: boolean; // Optional field
+}
+
 // Component
-const ProductDetail2: React.FC<ProductDetailProps> = ({ product }) => {
+const ProductDetail2: React.FC<any> = ({ product }) => {
   const [activeTab, setActiveTab] = useState<
     "description" | "additionalInfo" | "reviews"
   >("description");
@@ -94,15 +73,15 @@ const ProductDetail2: React.FC<ProductDetailProps> = ({ product }) => {
       {activeTab === "description" && (
         <div className="tab-content">
           <p className="text-gray-700 text-sm mb-4">{product.description}</p>
-          <div className="detail-description space-y-2 mb-4">
+          {/* <div className="detail-description space-y-2 mb-4">
             {product.detailDescription.map((desc, index) => (
               <p key={index} className="text-gray-600 text-sm">
                 {desc}
               </p>
             ))}
-          </div>
-          <div className="detail-images grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
-            {product.detailImages.map((image, index) => (
+          </div> */}
+          {/* <div className="detail-images grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
+            {product.productImages.asset.url.map((image, index) => (
               <Image
                 key={index}
                 src={image}
@@ -112,10 +91,10 @@ const ProductDetail2: React.FC<ProductDetailProps> = ({ product }) => {
                 height={100}
               />
             ))}
-          </div>
+          </div> */}
         </div>
       )}
-
+{/* 
       {activeTab === "additionalInfo" && (
         <div className="tab-content">
           <ul className="space-y-2">
@@ -145,9 +124,9 @@ const ProductDetail2: React.FC<ProductDetailProps> = ({ product }) => {
             </li>
           </ul>
         </div>
-      )}
+      )} */}
 
-      {activeTab === "reviews" && (
+      {/* {activeTab === "reviews" && (
         <div className="tab-content">
           <h3 className="text-xl font-semibold mb-4">
             Reviews ({product.reviews})
@@ -167,7 +146,7 @@ const ProductDetail2: React.FC<ProductDetailProps> = ({ product }) => {
             ))}
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
