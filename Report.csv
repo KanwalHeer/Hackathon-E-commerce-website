@@ -1,0 +1,35 @@
+Metric,Value
+Performance Score,85
+First Contentful Paint,0.8s
+Largest Contentful Paint,2.4s
+Total Blocking Time,0ms
+Cumulative Layout Shift,0
+Speed Index,2.3s
+Captured at,Jan 22, 2025, 1:37 PM GMT+5
+Emulated Device,Moto G Power
+Lighthouse Version,12.2.3
+Network Throttling,Slow 4G
+Page Load Type,Initial page load
+Root Document Time,570ms
+Network Payload Size,412 KiB
+DOM Size,426 elements
+Largest Contentful Paint Image,Lazily loaded
+Unused JavaScript Savings,22 KiB
+Proper Image Sizing Savings,15 KiB
+Initial Server Response Time,Short
+
+Accessibility Issues,Description
+Contrast,Background and foreground colors do not have sufficient contrast ratio.
+Touch Target Size,Touch targets do not have sufficient size or spacing.
+Navigation,Heading elements are not in a sequentially-descending order.
+
+Best Practices Issues,Description
+Touch Targets,Ensure touch targets have sufficient size and spacing.
+Navigation,Ensure headings are in sequential order.
+
+SEO Issues,Description
+Structured Data,Valid structured data found.
+Additional SEO Check,Run additional SEO validators.
+
+Passed Audits,22
+Not Applicable Audits,32
