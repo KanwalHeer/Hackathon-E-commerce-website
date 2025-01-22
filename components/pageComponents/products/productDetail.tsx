@@ -4,30 +4,12 @@ import {FaLinkedin, FaFacebook, FaTwitter } from "react-icons/fa";
 import Link from "next/link";
 import Image from "next/image";
 import { addToCart } from "@/redux/cartSlice";
-import { useDispatch, UseDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 
- interface ProductImage {
-  asset: {
-    _id: string;
-    url: string;
-  };
-}
-
- interface Product {
-  _id: string;
-  title: string;
-  description: string;
-  productImage: ProductImage;
-  price: number;
-  tags: string[];
-  dicountPercentage?: number; 
-  isNew?: boolean; 
-}
-
+ 
 const ProductDetail: React.FC<any> = ({ product }) => {
   console.log(product,"groduct...");
-  
-  const [quantity, setQuantity] = useState(1);
+
   const [mainImage, setMainImage] = useState(product.productImage.asset.url);
   const dispatch =useDispatch()
 
@@ -38,36 +20,6 @@ const ProductDetail: React.FC<any> = ({ product }) => {
     dispatch(addToCart(product)); 
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
 }
-
-// const handleRemoveToCart = () => {
-//   let cartItems = localStorage.getItem("cartItems");
-//   cartItems = cartItems ? JSON.parse(cartItems) : [];
-
-//   // Remove the specific product from the cart
-//   cartItems = cartItems?.filter(item => item.id !== product.id); // Assuming product has an 'id'
-
-//   dispatch(addToCart(cartItems));
-//   localStorage.setItem("cartItems", JSON.stringify(cartItems));
-// }
-
-
-
-  // const incrementQuantity = () =>{
-  //    setQuantity((prev) => prev + 1);
-  //    handleAddToCart()
-  // }
-  // const decrementQuantity = () =>{
-  //   setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
-    
-  // }
-
-  // const handleThumbnailClick = (image: string) => {
-  //   setMainImage(image);
-  // };
-
-
-  
-
 
   return (
     <div className="max-w-[1200px] mx-auto py-12 px-4">
@@ -96,22 +48,6 @@ const ProductDetail: React.FC<any> = ({ product }) => {
           <p className="text-gray-600 mb-4">{product.description}</p>
           {/* Quantity Selector */}
           <div className="flex items-center gap-4 mb-6 flex-col md:flex-row lg:flex-row">
-            {/* <div className="border border-gray-500 flex items-center rounded-xl">
-              <button
-                onClick={decrementQuantity}
-                className="px-4 py-2 border rounded-lg"
-              >
-                -
-              </button>
-              <span className="text-xl">{quantity}</span>
-              <button
-                onClick={incrementQuantity}
-                className="px-4 py-2 border rounded-lg"
-              >
-                +
-              </button>
-            </div> */}
-
             {/* Add to Cart and Compare Buttons */}
             <div className="flex flex-col sm:flex-row sm:gap-4 gap-4 w-full">
               <button onClick={handleAddToCart} className="w-full sm:w-auto py-3 px-6 text-black border border-black font-semibold rounded-xl hover:bg-yellow-600 hover:text-white hover:border-none transition-colors">

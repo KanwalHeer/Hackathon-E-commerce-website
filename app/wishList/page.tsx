@@ -9,21 +9,24 @@ export default function WishList() {
 
   
   // Load wishlist from localStorage
-  useEffect(() => {
+useEffect(() => {
+  if (typeof window !== "undefined") { // Check if window is available
     const storedWishList = localStorage.getItem("wishList");
     if (storedWishList) {
       setWishList(JSON.parse(storedWishList));
     }
-  }, []);
+  }
+}, []);
 
-
-
-  // Remove item from wishlist
-  const handleRemoveFromWishList = (productId: string) => {
+// Remove item from wishlist
+const handleRemoveFromWishList = (productId: string) => {
+  if (typeof window !== "undefined") { // Check if window is available
     const updatedWishList = wishList.filter((product) => product._id !== productId);
     setWishList(updatedWishList);
     localStorage.setItem("wishList", JSON.stringify(updatedWishList));
-  };
+  }
+};
+
 
   return (
     <div className="py-12 mx-4">

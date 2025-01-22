@@ -4,8 +4,7 @@ import { FaTrash } from "react-icons/fa";
 import Link from "next/link";
 import Image from "next/image";
 import { updateCartItem } from "@/redux/cartSlice";
-// import { RootState } from "@/redux/store";
-import {  useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 
 interface ProductImage {
   asset: {
@@ -29,55 +28,47 @@ interface Product {
 const Cart: React.FC = () => {
   const [cartItems, setCartItems] = useState<Product[]>([]);
   const [quantityStorage, setQuantityStorage] = useState<{ [key: string]: number }>({});
-const dispatch = useDispatch()
-  // Retrieve cart items and quantities from localStorage on component mount
+  const dispatch = useDispatch();
+
+  // Check if we're on the client side
+  const isClient = typeof window !== "undefined";
 
   useEffect(() => {
-    const storedCartItems = localStorage.getItem("cartItems");
-    const storedQuantityStorage = localStorage.getItem("quantityStorage");
+    if (isClient) {
+      const storedCartItems = localStorage.getItem("cartItems");
+      const storedQuantityStorage = localStorage.getItem("quantityStorage");
 
-    // if (storedCartItems) {
-    //   const parsedCartItems = JSON.parse(storedCartItems);
-    //   // Sync Redux state with localStorage cart items
-    //   parsedCartItems.forEach((item: Product) => {
-    //     dispatch(updateCartItem({ productId: item._id, quantity: item.quantity }));
-    //   });}
+      if (storedCartItems) {
+        const parsedCartItems = JSON.parse(storedCartItems);
+        setCartItems(parsedCartItems);
 
-    if (storedCartItems) {
-      const parsedCartItems = JSON.parse(storedCartItems);
-      setCartItems(parsedCartItems);
-
-      // Initialize quantities from quantityStorage if available, otherwise default to 1
-      const parsedQuantities = storedQuantityStorage ? JSON.parse(storedQuantityStorage) : {};
-      setQuantityStorage(parsedQuantities);
-    } else {
-      setCartItems([]);
-      setQuantityStorage({});
+        // Initialize quantities from quantityStorage if available, otherwise default to 1
+        const parsedQuantities = storedQuantityStorage ? JSON.parse(storedQuantityStorage) : {};
+        setQuantityStorage(parsedQuantities);
+      } else {
+        setCartItems([]);
+        setQuantityStorage({});
+      }
     }
-  }, []);
+  }, [isClient]); // Adding isClient as a dependency
 
   // Function to update quantity in the quantityStorage (separate from cartItems)
   const updateQuantityInStorage = (id: string, newQuantity: number) => {
     if (newQuantity < 1) return; // Prevent quantity from going below 1
-   // Update in Redux
-   
+
     const updatedQuantityStorage:any = { ...quantityStorage, [id]: newQuantity };
     setQuantityStorage(updatedQuantityStorage);
-// Log the updated quantityStorage to the console
-       const quantity = quantityStorage[id];
 
-  // Log the quantity
-  console.log(`Quantity of item ${id}:`, quantity);
-   console.log("Updated quantityStorage:", updatedQuantityStorage);
-   dispatch(updateCartItem(updatedQuantityStorage));
-    // Save updated quantity to localStorage
-    localStorage.setItem("quantityStorage", JSON.stringify(updatedQuantityStorage));
-    
+    // Log the updated quantityStorage to the console
+    console.log("Updated quantityStorage:", updatedQuantityStorage);
+    dispatch(updateCartItem(updatedQuantityStorage));
+
+    if (isClient) {
+      // Save updated quantity to localStorage only on client side
+      localStorage.setItem("quantityStorage", JSON.stringify(updatedQuantityStorage));
+    }
   };
 
-
- 
-  
   // Calculate subtotal for each product
   const calculateSubtotal = (price: number, quantity: number) => {
     return price * quantity;
@@ -162,12 +153,16 @@ const dispatch = useDispatch()
                       onClick={() => {
                         const updatedItems = cartItems.filter((cartItem) => cartItem._id !== item._id);
                         setCartItems(updatedItems);
-                        localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+                        if (isClient) {
+                          localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+                        }
 
                         // Also remove the quantity from the quantityStorage
                         const { [item._id]: _, ...rest } = quantityStorage; // Remove the item from quantityStorage
                         setQuantityStorage(rest);
-                        localStorage.setItem("quantityStorage", JSON.stringify(rest));
+                        if (isClient) {
+                          localStorage.setItem("quantityStorage", JSON.stringify(rest));
+                        }
                       }}
                     >
                       <FaTrash />

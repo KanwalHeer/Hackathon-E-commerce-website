@@ -1,7 +1,6 @@
 "use client";
 // src/components/pageComponents/products/listing.tsx
 import React, { useEffect, useState } from "react";
-import { dummyProducts } from "../../../app/data/dumyData";
 import ProductGrid from "@/components/globalComponents/productListing/productslisting";
 import Link from "next/link";
 import { client } from "@/sanity/lib/client"
@@ -31,11 +30,6 @@ export default function RelatedProducts() {
       });
     }, []); 
   
-  // // Simulating fetching products from an API
-  // useEffect(() => {
-  //   setProducts(dummyProducts);
-  // }, []);
-
   return (
     <div>
       <h1 className="text-2xl font-semibold text-center">Related Products</h1>

@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import Image from "next/image";
 
 /// types.ts
 export interface ProductImage {
@@ -17,8 +16,8 @@ export interface Product {
   productImage: ProductImage;
   price: number;
   tags: string[];
-  dicountPercentage?: number; // Optional field
-  isNew?: boolean; // Optional field
+  dicountPercentage?: number;
+  isNew?: boolean; 
 }
 
 // Component
@@ -73,25 +72,7 @@ const ProductDetail2: React.FC<any> = ({ product }) => {
       {activeTab === "description" && (
         <div className="tab-content">
           <p className="text-gray-700 text-sm mb-4">{product.description}</p>
-          {/* <div className="detail-description space-y-2 mb-4">
-            {product.detailDescription.map((desc, index) => (
-              <p key={index} className="text-gray-600 text-sm">
-                {desc}
-              </p>
-            ))}
-          </div> */}
-          {/* <div className="detail-images grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
-            {product.productImages.asset.url.map((image, index) => (
-              <Image
-                key={index}
-                src={image}
-                alt={`Detail image ${index + 1}`}
-                className="w-full h-auto rounded-lg shadow-md"
-                width={100}
-                height={100}
-              />
-            ))}
-          </div> */}
+        
         </div>
       )}
 {/* 

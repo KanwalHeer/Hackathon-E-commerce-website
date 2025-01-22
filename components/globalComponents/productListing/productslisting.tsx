@@ -59,24 +59,29 @@ const ProductGrid: React.FC<ProductGridProps> = ({
   };
 
 
-
- const handleAddToWishList = (product: Product) => {
-  alert("Product added to wishlist");
-
-  // Get existing wishlist from localStorage
-  let wishList: Product[] = JSON.parse(localStorage.getItem("wishList") || "[]");
-
-  // Check if the product is already in the wishlist
-  const isProductInWishlist = wishList.some(item => item._id === product._id);
-
-  if (!isProductInWishlist) {
-    // If not, add the product to the wishlist
-    wishList.push(product);
-    localStorage.setItem("wishList", JSON.stringify(wishList));
-  } else {
-    alert("This product is already in your wishlist!");
-  }
-};
+  const handleAddToWishList = (product: Product) => {
+    if (typeof window !== "undefined") { // Check if window is available
+      alert("Product added to wishlist");
+  
+      // Get existing wishlist from localStorage
+      let wishList: Product[] = JSON.parse(localStorage.getItem("wishList") || "[]");
+  
+      // Check if the product is already in the wishlist
+      const isProductInWishlist = wishList.some(item => item._id === product._id);
+  
+      if (!isProductInWishlist) {
+        // If not, add the product to the wishlist
+        wishList.push(product);
+        localStorage.setItem("wishList", JSON.stringify(wishList));
+      } else {
+        alert("This product is already in your wishlist!");
+      }
+    } else {
+      // Handle the case where localStorage is not available (e.g., during SSR)
+      console.error("localStorage is not available.");
+    }
+  };
+  
 
 
 

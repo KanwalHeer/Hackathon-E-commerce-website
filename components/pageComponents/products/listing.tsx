@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { dummyProducts } from "../../../app/data/dumyData";
 import ProductGrid from "@/components/globalComponents/productListing/productslisting";
 import { client } from "@/sanity/lib/client";
 export default function Products() {
