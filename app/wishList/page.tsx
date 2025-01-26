@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { FaRegHeart } from "react-icons/fa";
 import TruncateDescription from "@/components/globalComponents/truncateDescription";
 import Image from "next/image";
+import Link from "next/link";
 export default function WishList() {
   const [wishList, setWishList] = useState<any[]>([]);
 
@@ -69,6 +70,9 @@ const handleRemoveFromWishList = (productId: string) => {
                   >
                     Remove from Wishlist
                   </button>
+                  <button className="py-2 px-4 bg-white text-yellow-600 rounded-lg hover:underline transition-colors mb-4">
+                  <Link href={`/products/${product._id}`}>Add to Cart</Link>
+                </button>
                 </div>
               </div>
             ))}

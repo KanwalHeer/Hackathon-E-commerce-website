@@ -5,6 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { updateCartItem } from "@/redux/cartSlice";
 import { useDispatch } from "react-redux";
+import { signIn ,useSession} from "next-auth/react";
+import { useRouter } from "next/navigation"; 
 
 interface ProductImage {
   asset: {
@@ -29,9 +31,18 @@ const Cart: React.FC = () => {
   const [cartItems, setCartItems] = useState<Product[]>([]);
   const [quantityStorage, setQuantityStorage] = useState<{ [key: string]: number }>({});
   const dispatch = useDispatch();
-
+  const { data: session } = useSession();
+  const router = useRouter();
   // Check if we're on the client side
   const isClient = typeof window !== "undefined";
+
+ const redirectHnadler = ()=>{
+  if (session) {
+    router.push("/checkout")
+  }else{
+    router.push("/auth/sign-in")
+  }
+ }
 
   useEffect(() => {
     if (isClient) {
@@ -190,7 +201,8 @@ const Cart: React.FC = () => {
             <span className="text-lg text-yellow-700">${calculateTotal().toFixed(2)}</span>
           </div>
 
-          <button className="w-full py-3 border border-black text-black font-semibold rounded-xl hover:bg-yellow-600 hover:text-white hover:border-none transition-colors">
+          <button className="w-full py-3 border border-black text-black font-semibold rounded-xl hover:bg-yellow-600 hover:text-white hover:border-none transition-colors"
+          onClick={redirectHnadler}>
             <Link href="/checkout">Checkout</Link>
           </button>
         </div>

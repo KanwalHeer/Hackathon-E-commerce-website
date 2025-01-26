@@ -7,6 +7,8 @@ const Placeholder: React.FC = () => {
   const placeOrder = () => {
     alert("Your Order has been placed!");
     router.push("/");
+
+   
   };
   return (
     <div className=" py-12 px-6 ">

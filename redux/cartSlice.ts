@@ -9,12 +9,14 @@ interface CartItem {
 
 interface CartState {
   items: CartItem[];
-  updateItems:any[]
+  updateItems:any[];
+  userData:any
 }
 
 const initialState: CartState = {
   items: [],
   updateItems :[],
+  userData:{}
 };
 
 const cartSlice = createSlice({
@@ -27,18 +29,15 @@ const cartSlice = createSlice({
     updateCartItem(state, action: PayloadAction<CartItem>) {
       state.updateItems.push(action.payload);
     },
-    // updateCartItem(state, action: PayloadAction<{ productId: string; quantity: number }>) {
-    //   const index = state.items.findIndex((item) => item._id === action.payload.productId);
-    //   if (index !== -1) {
-    //     state.items[index].quantity = action.payload.quantity;
-    //   }
-    // },
+    userData(state, action: PayloadAction<any>) {
+      state.userData = action.payload; // Directly assign object to user
+    },
     removeFromCart(state, action: PayloadAction<string>) {
       state.items = state.items.filter(item => item._id !== action.payload);
     }
   }
 });
 
-export const { addToCart, updateCartItem, removeFromCart } = cartSlice.actions;
+export const { addToCart, updateCartItem, removeFromCart,userData } = cartSlice.actions;
 
 export default cartSlice.reducer;
