@@ -5,6 +5,8 @@ import Image from "next/image";
 import { FaShareAlt, FaRegHeart, FaRegClone } from "react-icons/fa";
 import { TbArrowsRightLeft } from "react-icons/tb";
 import TruncateDescription from "../truncateDescription";
+import { addToWishlist,addToCart } from "@/redux/cartSlice";
+import { useDispatch, UseDispatch } from "react-redux";
 // types.ts
 export interface ProductImage {
   asset: {
@@ -20,8 +22,8 @@ export interface Product {
   productImage: ProductImage;
   price: number;
   tags: string[];
-  dicountPercentage?: number; // Optional field
-  isNew?: boolean; // Optional field
+  dicountPercentage?: number; 
+  isNew?: boolean; 
 }
 
 interface ProductGridProps {
@@ -35,7 +37,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isProductsPage, setIsProductsPage] = useState(false);
-
+  const dispatch = useDispatch()
   useEffect(() => {
     // Check if the current page is '/products'
     if (typeof window !== "undefined") {
@@ -58,31 +60,9 @@ const ProductGrid: React.FC<ProductGridProps> = ({
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
-
-  const handleAddToWishList = (product: Product) => {
-    if (typeof window !== "undefined") { // Check if window is available
-      alert("Product added to wishlist");
-  
-      // Get existing wishlist from localStorage
-      let wishList: Product[] = JSON.parse(localStorage.getItem("wishList") || "[]");
-  
-      // Check if the product is already in the wishlist
-      const isProductInWishlist = wishList.some(item => item._id === product._id);
-  
-      if (!isProductInWishlist) {
-        // If not, add the product to the wishlist
-        wishList.push(product);
-        localStorage.setItem("wishList", JSON.stringify(wishList));
-      } else {
-        alert("This product is already in your wishlist!");
-      }
-    } else {
-      // Handle the case where localStorage is not available (e.g., during SSR)
-      console.error("localStorage is not available.");
-    }
+  const handleAddToWishlist = (product:any) => {
+    dispatch(addToWishlist(product));
   };
-  
-
 
 
 
@@ -154,7 +134,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({
                     </span>
                   </div>
                   <div className="flex justify-center items-center gap-1 hover:underline">
-                  <span onClick={() => handleAddToWishList(product)}>
+                  <span onClick={() => handleAddToWishlist(product)}>
                     <FaRegHeart className="cursor-pointer hover:text-blue-600" />
                   </span>
                 </div>

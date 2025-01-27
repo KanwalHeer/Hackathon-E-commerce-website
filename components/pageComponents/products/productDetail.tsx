@@ -8,19 +8,11 @@ import { useDispatch } from "react-redux";
 
  
 const ProductDetail: React.FC<any> = ({ product }) => {
-  console.log(product,"groduct...");
-
   const [mainImage, setMainImage] = useState(product.productImage.asset.url);
   const dispatch =useDispatch()
-
-  const handleAddToCart = () => {
-    let cartItems:any = localStorage.getItem("cartItems");
-    cartItems = cartItems ? JSON.parse(cartItems) : [];
-    cartItems.push(product);
-    dispatch(addToCart(product)); 
-    localStorage.setItem("cartItems", JSON.stringify(cartItems));
-}
-
+  const handleAddToCart = (product:any) => {
+  dispatch(addToCart(product)); 
+};
   return (
     <div className="max-w-[1200px] mx-auto py-12 px-4">
       <div className="flex flex-col lg:flex-row gap-12">
@@ -50,7 +42,7 @@ const ProductDetail: React.FC<any> = ({ product }) => {
           <div className="flex items-center gap-4 mb-6 flex-col md:flex-row lg:flex-row">
             {/* Add to Cart and Compare Buttons */}
             <div className="flex flex-col sm:flex-row sm:gap-4 gap-4 w-full">
-              <button onClick={handleAddToCart} className="w-full sm:w-auto py-3 px-6 text-black border border-black font-semibold rounded-xl hover:bg-yellow-600 hover:text-white hover:border-none transition-colors">
+              <button onClick={()=>handleAddToCart(product)} className="w-full sm:w-auto py-3 px-6 text-black border border-black font-semibold rounded-xl hover:bg-yellow-600 hover:text-white hover:border-none transition-colors">
                Add to Cart
               </button>
               <button className="w-full sm:w-auto py-3 px-6 text-black border border-black font-semibold rounded-xl hover:bg-yellow-600 hover:text-white hover:border-none transition-colors">

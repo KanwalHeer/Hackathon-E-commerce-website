@@ -21,8 +21,69 @@ export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   // Field validation
+  //   if (
+  //     !name ||
+  //     !email ||
+  //     !password ||
+  //     !confirmPassword ||
+  //     !phoneNumber ||
+  //     !address
+  //   ) {
+  //     setError("All fields are necessary.");
+  //     return;
+  //   }
+  //   // Email validation (simple)
+  //   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  //   if (!emailRegex.test(email)) {
+  //     setError("Please enter a valid email address.");
+  //     return;
+  //   }
+  //   // Password validation
+  //   if (password.length < 6) {
+  //     setError("Password must be at least 6 characters.");
+  //     return;
+  //   }
+
+  //   // Phone number validation (simple check for non-empty string)
+  //   if (phoneNumber.length < 10) {
+  //     setError("Phone number must be at least 10 digits.");
+  //     return;
+  //   }
+
+  //   try {
+  //     const res = await fetch("/api/signup", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         name,
+  //         email,
+  //         password,
+  //         phoneNumber,
+  //         address,
+  //       }),
+  //     });
+
+  //     if (res.ok) {
+  //       const form = e.currentTarget as HTMLFormElement;
+  //       form.reset();
+  //       router.push("/auth/sign-in");
+  //     } else {
+  //       setError("User registration failed.");
+  //     }
+  //   } catch (error) {
+  //     // setError("Error during registration: " + error);
+  //   }
+  // };
+
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+  
     // Field validation
     if (
       !name ||
@@ -35,24 +96,26 @@ export default function SignUp() {
       setError("All fields are necessary.");
       return;
     }
+  
     // Email validation (simple)
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(email)) {
       setError("Please enter a valid email address.");
       return;
     }
+  
     // Password validation
     if (password.length < 6) {
       setError("Password must be at least 6 characters.");
       return;
     }
-
+  
     // Phone number validation (simple check for non-empty string)
     if (phoneNumber.length < 10) {
       setError("Phone number must be at least 10 digits.");
       return;
     }
-
+  
     try {
       const res = await fetch("/api/signup", {
         method: "POST",
@@ -67,19 +130,33 @@ export default function SignUp() {
           address,
         }),
       });
-
+  
       if (res.ok) {
-        const form = e.currentTarget as HTMLFormElement;
-        form.reset();
+        console.log("User registered successfully"); // Log for debugging
+  
+        // Reset form state manually here
+        setName('');
+        setEmail('');
+        setPassword('');
+        setConfirmPassword('');
+        setPhoneNumber('');
+        setAddress('');
+  
+        // Redirect to the sign-in page
+        console.log("Redirecting to sign-in...");
         router.push("/auth/sign-in");
       } else {
+        const errorData = await res.json();
+        console.log("Registration failed", errorData);
         setError("User registration failed.");
       }
     } catch (error) {
+      console.error("Error during registration:", error);
       setError("Error during registration: " + error);
     }
   };
-
+  
+  
   return (
     <div className="flex items-center justify-center min-h-[300px] bg-gray-50 mb-6">
       <div className="bg-white shadow-2xl p-10 rounded-lg border-2 border-yellow-600 w-full max-w-[700px]">

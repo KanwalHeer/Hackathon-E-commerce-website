@@ -5,6 +5,7 @@ import ProductDetail2 from '@/components/pageComponents/products/detailInnfo';
 import RelatedProducts from '@/components/pageComponents/products/recentProducts';
 import { useEffect, useState } from 'react';
 import { client } from "@/sanity/lib/client"
+import Loader from '@/components/loader/loader';
  interface ProductImage {
   asset: {
     _id: string;
@@ -60,7 +61,7 @@ console.log(products,"products");
   console.log(product);
   
   if (!product) {
-    return <p>Product not found</p>;
+    return <Loader/>
   }
   return (
     <div>

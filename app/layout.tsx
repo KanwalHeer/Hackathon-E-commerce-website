@@ -43,6 +43,8 @@ import Footer from "@/components/globalComponents/footer/page";
 import ClientLayout from "@/components/reduxProvider/reduxProvider"; 
 import { ClerkProvider } from '@clerk/nextjs';
 import AuthProvider from "./provider";
+import LoaderWrapper from "@/components/globalComponents/loaderWrapper";
+
 // Set metadata for the app
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -54,24 +56,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+
   return (
-    // <ClerkProvider>
     <AuthProvider>
       <html lang="en">
         <body>
-          {/* SignedIn and SignedOut components manage authentication flow */}
-          {/* <SignedOut>
-            <SignInButton />
-          </SignedOut>
-          <SignedIn>
-            <UserButton />
-          </SignedIn> */}
-
-          {/* Wrap the content in the ClientLayout to ensure Redux provider is functional */}
           <ClientLayout>
             <Header />
-            {children}
-            <Footer />
+            <LoaderWrapper>{children}</LoaderWrapper>
           </ClientLayout>
         </body>
       </html>

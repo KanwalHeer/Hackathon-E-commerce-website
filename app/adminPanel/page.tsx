@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Loader from '@/components/loader/loader';
 // Define a TypeScript interface for a user
 interface User {
     _id: string;
@@ -14,6 +15,7 @@ interface User {
 
 // Define the component function
 export default function Users() {
+    // const [loading, setLoading] = useState<boolean>(true); // Loading state
 const router = useRouter()
    const handleLogout = async () => {
       await signOut({ redirect: false });
@@ -75,7 +77,8 @@ const router = useRouter()
                     </table>
                 </div>
             ) : (
-                <p className="text-yellow-900 text-center">Loading....</p>
+                <Loader/>
+                // <p className="text-yellow-900 text-center">Loading....</p>
             )}
         </div>
     );

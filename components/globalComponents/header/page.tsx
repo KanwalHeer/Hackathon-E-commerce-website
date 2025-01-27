@@ -16,9 +16,10 @@ import {
   FaUser,
 } from "react-icons/fa";
 import Image from "next/image";
-import { useSelector } from "react-redux";
-import { addToCart, updateCartItem } from "@/redux/cartSlice";
+import {  useSelector } from "react-redux";
 import { client } from "@/sanity/lib/client";
+import { RootState } from "@/redux/store";
+
 const Header: React.FC = () => {
   const router = useRouter();
   const { data: session } = useSession();
@@ -27,17 +28,14 @@ const Header: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredProducts, setFilteredProducts] = useState(products);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const wishList =
-    typeof window !== "undefined" ? localStorage.getItem("wishList") : null;
-  const cartItem = useSelector((state: any) => state.cart.items);
   const [isDeatai, setDetail] = useState<any>(false);
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-  const [cart, setCart] = useState<any>([]);
-  const [cartItemLength, setCartItemLength] = useState(0);
-  const [wishListLegth, setWishLisLegtht] = useState([]);
-  const [cartItemTotalLength, setCartItemTotalLength] = useState(0);
   const user = process.env.NEXT_PUBLIC_USER_ROLE;
-  // Check if the specific cookie exists in document.cookie
+  const [mounted, setMounted] = useState(false);
+  const cartItems = useSelector((state: RootState) => state.cart.items);
+  const wishlistItems = useSelector((state: RootState) => state.cart.wishlist);
+  const totalQuantity = useSelector((state: any) => state.cart.totalQuantity);
+ 
   if (typeof window !== "undefined") {
   if (document.cookie.includes("next-auth.session-token")) {
     console.log("Token is present in document.cookie");
@@ -45,6 +43,7 @@ const Header: React.FC = () => {
     console.log("Token is not found in document.cookie");
   }
   }
+
   const handleLogout = async () => {
     await signOut({ redirect: false });
     router.push("/auth/sign-in");
@@ -80,89 +79,11 @@ const Header: React.FC = () => {
       });
   }, []);
 
-  const getTotalQuantityFromLocalStorage = () => {
-    if (typeof window !== "undefined") {
-      const storedQuantityStorage = localStorage.getItem("quantityStorage");
-      if (storedQuantityStorage) {
-        const parsedQuantityStorage = JSON.parse(storedQuantityStorage);
-        const totalQuantity = Object.values(parsedQuantityStorage).reduce(
-          (total: any, quantity) => {
-            return total + quantity;
-          },
-          0
-        );
-        return totalQuantity;
-      }
-    }
-    return 0;
-  };
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const totalQuantity: any = getTotalQuantityFromLocalStorage();
-      const numberOfIds: any = Object.keys(
-        JSON.parse(localStorage.getItem("quantityStorage") || "{}")
-      ).length;
-      const adjustedTotalQuantity: any = totalQuantity - numberOfIds;
-      setCartItemTotalLength(adjustedTotalQuantity);
-    }
-  }, []);
 
-  const updateCartItem = useSelector((state: any) => state.cart.updateItems);
-  const [cartItemCountFromRedux, setCartItemCountFromRedux] = useState(0);
+  
+ 
 
-  const getTotalQuantityFromLRedux = () => {
-    if (
-      updateCartItem &&
-      Array.isArray(updateCartItem) &&
-      updateCartItem.length > 0
-    ) {
-      const totalQuantity = updateCartItem.reduce(
-        (total: number, item: any) => {
-          return total + (item.quantity || 0);
-        },
-        0
-      );
-      return totalQuantity;
-    }
-    return 0;
-  };
-
-  useEffect(() => {
-    const totalQuantity: any = getTotalQuantityFromLRedux();
-    // Get the number of unique item IDs (length of the updateItems array)
-    const numberOfIds: any = updateCartItem.length;
-    // Set the total quantity from Redux directly to the state
-    setCartItemCountFromRedux(totalQuantity);
-  }, []);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      console.log(wishList, "total updateCartItem");
-      if (wishList) {
-        const parsedQuantityStorage = JSON.parse(wishList);
-        setWishLisLegtht(parsedQuantityStorage);
-      }
-    }
-  }, [wishList]);
-
-  console.log(wishListLegth.length, "total updateCartItem");
-
-  useEffect(() => {
-    const totalQuantityFromLocalStorage = getTotalQuantityFromLocalStorage();
-    const totalQuantityFromRedux = getTotalQuantityFromLRedux();
-    // Combine both total quantities
-    const combinedTotalQuantity =
-      totalQuantityFromLocalStorage + totalQuantityFromRedux;
-    // Set the combined total quantity
-    setCartItemTotalLength(combinedTotalQuantity);
-    console.log(combinedTotalQuantity, "combined total quantity");
-  }, []);
-
-  // Update cartItemLength whenever cart state changes
-  useEffect(() => {
-    setCartItemLength(cart.length);
-  }, [cart]);
 
   // Function to handle search
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -177,12 +98,16 @@ const Header: React.FC = () => {
     setFilteredProducts(filtered);
   };
 
-  // Function to toggle the search input visibility
-  const toggleSearch = () => {
-    setIsSearchOpen(!isSearchOpen);
-    setSearchQuery("");
-    setFilteredProducts(products);
-  };
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+
+  if (!mounted) {
+    return null; 
+  }
+  
 
   const onDetail = () => {
     setDetail(true);
@@ -261,28 +186,17 @@ const Header: React.FC = () => {
                 className="relative text-[24px] hover:underline"
               >
                 <span className="absolute top-[-14px] right-[-8px] inline-block bg-yellow-600 text-white text-[10px] px-2 py-1 rounded-full">
-                  {wishListLegth.length}
+                  {wishlistItems.length}
                 </span>
                 <GoHeart />
               </Link>
 
-              <Link href="/cart" className="relative">
-                <AiOutlineShoppingCart className="text-[24px] hover:underline" />
-
-                {cartItemCountFromRedux ? (
-                  <span className="absolute -top-4 right-3 inline-block bg-yellow-600 text-white text-[10px] px-2 py-1 rounded-full">
-                    {cartItemCountFromRedux}
-                  </span>
-                ) : cartItem ? (
-                  <span className="absolute -top-4 right-3 inline-block bg-yellow-600 text-white text-[10px] px-2 py-1 rounded-full">
-                    {cartItem.length + cartItemLength + cartItemTotalLength}
-                  </span>
-                ) : (
-                  <span className="absolute -top-4 right-3 inline-block bg-yellow-600 text-white text-[10px] px-2 py-1 rounded-full">
-                    {cartItemLength + cartItemTotalLength}
-                  </span>
-                )}
-              </Link>
+              <Link href="/cart" className="relative" onClick={catchRouteHandler}>
+            <AiOutlineShoppingCart className="text-[24px] hover:underline" />
+              <span className="absolute -top-4 right-3 inline-block bg-yellow-600 text-white text-[10px] px-2 py-1 rounded-full">
+                {totalQuantity}
+            </span>
+          </Link>
             </>
           )}
         </nav>
@@ -322,27 +236,17 @@ const Header: React.FC = () => {
           />
           <Link href="/cart" className="relative" onClick={catchRouteHandler}>
             <AiOutlineShoppingCart className="text-[24px] hover:underline" />
-
-            {cartItemCountFromRedux ? (
               <span className="absolute -top-4 right-3 inline-block bg-yellow-600 text-white text-[10px] px-2 py-1 rounded-full">
-                {cartItemCountFromRedux}
-              </span>
-            ) : cartItem ? (
-              <span className="absolute -top-4 right-3 inline-block bg-yellow-600 text-white text-[10px] px-2 py-1 rounded-full">
-                {cartItem.length + cartItemLength + cartItemTotalLength}
-              </span>
-            ) : (
-              <span className="absolute -top-4 right-3 inline-block bg-yellow-600 text-white text-[10px] px-2 py-1 rounded-full">
-                {cartItemLength + cartItemTotalLength}
-              </span>
-            )}
+                {totalQuantity}
+            </span>
           </Link>
+          
           <Link
             href="/wishList"
             className="relative text-[24px] hover:underline"
           >
             <span className="absolute top-[-14px] right-[-8px] inline-block bg-yellow-600 text-white text-[10px] px-2 py-1 rounded-full">
-              {wishListLegth.length}
+              {wishlistItems.length}
             </span>
             <GoHeart />
           </Link>
