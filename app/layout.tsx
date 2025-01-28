@@ -65,6 +65,7 @@ export default function RootLayout({
           <ClientLayout>
             <Header />
             <LoaderWrapper>{children}</LoaderWrapper>
+            <Footer/>
           </ClientLayout>
         </body>
       </html>
