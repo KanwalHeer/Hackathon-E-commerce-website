@@ -45,11 +45,15 @@ const Header: React.FC = () => {
   }
 
   const handleLogout = async () => {
+   
     await signOut({ redirect: false });
+    // toggleMenu()
     router.push("/auth/sign-in");
+
     if (typeof window !== "undefined") {
       localStorage.removeItem("chechoutRoute");
     }
+    toggleMenu()
   };
 
   useEffect(() => {
@@ -120,7 +124,7 @@ const Header: React.FC = () => {
     }
   };
   return (
-    <header className="bg-yellow-50 py-4 px-6">
+    <header className="bg-yellow-50 py-4 px-6 sticky top-0 z-50">
       <div className="max-w-screen-2xl mx-auto flex items-center justify-between">
         {/* Logo */}
         <div className="flex justify-center items-center font-bold mb-3 mr-2">
@@ -352,7 +356,7 @@ const Header: React.FC = () => {
                   onClick={toggleMenu}
                 >
                   <FaUser />
-                  <span>Login</span>
+                  <span onClick={toggleMenu}>Login</span>
                 </Link>
               </>
             )}
@@ -362,7 +366,7 @@ const Header: React.FC = () => {
               onClick={handleLogout}
             >
               <FiLogOut />
-              <span>Logout</span>
+              <span onClick={toggleMenu}>Logout</span>
             </button>
             {/* } */}
           </nav>

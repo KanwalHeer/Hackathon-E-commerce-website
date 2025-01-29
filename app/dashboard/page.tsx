@@ -349,67 +349,22 @@ export default function UserInfo() {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
-      <div
-        className={`w-64 bg-yellow-700 text-white shadow-lg p-6 fixed inset-0 z-50 transform ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } md:relative md:translate-x-0 transition-transform duration-300 ease-in-out`}
-      >
-        <h2 className="text-3xl font-semibold text-center text-white mb-12">Dashboard</h2>
-        <div className="space-y-4">
-          <Link href="/dashboard" className="text-xl text-white hover:bg-yellow-600 px-4 py-2 rounded-md block">
-            Profile
-          </Link>
-          <Link href="/orders" className="text-xl text-white hover:bg-yellow-600 px-4 py-2 rounded-md block">
-            Order History
-          </Link>
-          <Link href="/security" className="text-xl text-white hover:bg-yellow-600 px-4 py-2 rounded-md block">
-            Security
-          </Link>
-          <Link href="/billing" className="text-xl text-white hover:bg-yellow-600 px-4 py-2 rounded-md block">
-            Billing Address
-          </Link>
-          <Link href="/payment" className="text-xl text-white hover:bg-yellow-600 px-4 py-2 rounded-md block">
-            Payment Methods
-          </Link>
-          <Link href="/templates" className="text-xl text-white hover:bg-yellow-600 px-4 py-2 rounded-md block">
-            Templates
-          </Link>
-        </div>
-      </div>
-
-      {/* Overlay */}
-      <div
-        className={`fixed inset-0 bg-black bg-opacity-50 z-40 ${isSidebarOpen ? "block" : "hidden"}`}
-        onClick={() => setIsSidebarOpen(false)}
-      ></div>
+    
+     
 
       {/* Main content */}
-      <div className="flex-1 p-10 md:ml-64">
+      <div className="flex-1 ">
         {/* Mobile Menu Toggle Button */}
-        <button
-        title="button"
-            className="md:hidden mb-8 text-black"
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)} // Toggle Sidebar
-          >
-            <MdArrowForwardIos/>
-          </button>
+       
         {/* Header */}
         <div className="mb-12 flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-semibold text-gray-800">
+            <h1 className="md:text-3xl text-2xl text-center md:text-start font-semibold text-gray-800">
               Welcome, {session.user?.name || "Valued Customer"}
             </h1>
-            <p className="text-xl text-gray-600 mt-2">Explore Our Latest Products and Offers</p>
+            <p className="md:text-xl text-lg text-center md:text-start text-gray-600 mt-2">Explore Our Latest Products and Offers</p>
           </div>
-          <div>
-            <button
-              onClick={handleLogout}
-              className="bg-yellow-700 text-white font-bold px-6 py-3 rounded-xl hover:bg-yellow-600 transition duration-300"
-            >
-              Log Out
-            </button>
-          </div>
+         
 
           
         </div>
@@ -532,3 +487,4 @@ export default function UserInfo() {
     </div>
   );
 }
+
