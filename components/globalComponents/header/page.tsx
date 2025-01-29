@@ -53,7 +53,7 @@ const Header: React.FC = () => {
     if (typeof window !== "undefined") {
       localStorage.removeItem("chechoutRoute");
     }
-    toggleMenu()
+     toggleMenu()
   };
 
   useEffect(() => {
@@ -347,6 +347,13 @@ const Header: React.FC = () => {
                     </>
                   )}
                 </div>
+                <button
+              className="flex items-center gap-2 hover:text-gray-800 hover:underline text-center "
+              onClick={handleLogout}
+            >
+              <FiLogOut />
+              <span onClick={toggleMenu}>Logout</span>
+            </button>
               </>
             ) : (
               <>
@@ -360,14 +367,8 @@ const Header: React.FC = () => {
                 </Link>
               </>
             )}
-
-            <button
-              className="flex items-center gap-2 hover:text-gray-800 hover:underline text-center "
-              onClick={handleLogout}
-            >
-              <FiLogOut />
-              <span onClick={toggleMenu}>Logout</span>
-            </button>
+            
+           
             {/* } */}
           </nav>
         </div>
@@ -376,7 +377,7 @@ const Header: React.FC = () => {
       {/* Search Input (Appears when search icon is clicked) */}
       {session?.user.email !== user && (
         <div className="hidden md:block">
-          <div className="flex items-center justify-center space-x-4 mt-4">
+          <div className="flex items-center justify-center space-x-1">
             <input
               type="text"
               placeholder="Search products..."
