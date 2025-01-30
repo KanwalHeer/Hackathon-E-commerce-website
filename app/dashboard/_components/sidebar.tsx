@@ -48,7 +48,7 @@ const Sidebar: React.FC = () => {
       >
         {/* Logo and Close Button */}
         <div className="p-4 flex justify-between items-center">
-          <span className="text-xl font-bold">Dashboard</span>
+          <Link href={'/dashboard'} className="text-xl font-bold">Dashboard</Link>
           <button className="lg:hidden" onClick={toggleSidebar} title="button">
             <FaTimes className="h-6 w-6 text-white" />
           </button>
@@ -57,7 +57,7 @@ const Sidebar: React.FC = () => {
         {/* Navigation Links */}
         <nav className="flex flex-col p-4 space-y-4">
            <Link
-            href="/dashboard"
+            href="/profile"
             className="flex items-center  text-white hover:bg-yellow-500 px-4 py-2 rounded-md "
           >
             <FaUser className="mr-4 text-xl" />
@@ -85,14 +85,14 @@ const Sidebar: React.FC = () => {
             <span className="">Wishlist</span>
           </Link>
           <Link
-            href="/dashboard/payment-methods"
+            href="/dashboard/payments"
             className="flex items-center  text-white hover:bg-yellow-500 px-4 py-2 rounded-md "
           >
             <FaCreditCard className="mr-4 text-xl" />
             <span className="">Payment Methods</span>
           </Link>
           <Link
-            href="/dashboard/addresses"
+            href="/dashboard/address"
             className="flex items-center  text-white hover:bg-yellow-500 px-4 py-2 rounded-md "
           >
             <FaMapMarkedAlt className="mr-4 text-xl" />

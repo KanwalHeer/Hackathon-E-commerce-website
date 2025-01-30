@@ -60,8 +60,21 @@ const ProductGrid: React.FC<ProductGridProps> = ({
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
+   const [cartAdded, setcartAdded] = useState(false);
+   
+  
+    const handlCartAdded = () => {
+      setcartAdded(true); 
+     
+  
+      
+      setTimeout(() => {
+        setcartAdded(false); 
+      }, 3000); 
+    };
   const handleAddToWishlist = (product:any) => {
     dispatch(addToWishlist(product));
+    handlCartAdded()
   };
 
 
@@ -185,6 +198,18 @@ const ProductGrid: React.FC<ProductGridProps> = ({
           </div>
         )}
       </div>
+      {cartAdded && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="bg-white p-6 rounded-lg shadow-md w-[90%] md:w-[400px]">
+      <h3 className="text-xl font-bold text-[#1D3178] mb-4">
+        Item Added to Your Wishlist
+      </h3>
+      <p className="text-[#8A91AB] text-sm mb-6">
+        Your item has been successfully added to the wishlist.
+      </p>
+    </div>
+  </div>
+)}
     </div>
   );
 };

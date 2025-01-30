@@ -9,10 +9,28 @@ import { useDispatch } from "react-redux";
  
 const ProductDetail: React.FC<any> = ({ product }) => {
   const [mainImage, setMainImage] = useState(product.productImage.asset.url);
+  const [cartAdded, setcartAdded] = useState(false);
+ 
+
+  const handlCartAdded = () => {
+    setcartAdded(true); 
+   
+
+    
+    setTimeout(() => {
+      setcartAdded(false); 
+    }, 3000); 
+  };
   const dispatch =useDispatch()
   const handleAddToCart = (product:any) => {
   dispatch(addToCart(product)); 
+  handlCartAdded()
 };
+
+
+ 
+
+  
   return (
     <div className="max-w-[1200px] mx-auto py-12 px-4">
       <div className="flex flex-col lg:flex-row gap-12">
@@ -48,6 +66,19 @@ const ProductDetail: React.FC<any> = ({ product }) => {
               <button className="w-full sm:w-auto py-3 px-6 text-black border border-black font-semibold rounded-xl hover:bg-yellow-600 hover:text-white hover:border-none transition-colors">
                 <Link href={"/compare"}>+ Compare</Link>
               </button>
+              {cartAdded && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="bg-white p-6 rounded-lg shadow-md w-[90%] md:w-[400px]">
+      <h3 className="text-xl font-bold text-[#1D3178] mb-4">
+        Item Added to Cart
+      </h3>
+      <p className="text-[#8A91AB] text-sm mb-6">
+        Your item has been successfully added to the cart.
+      </p>
+    </div>
+  </div>
+)}
+
             </div>
           </div>
             <div className="flex gap-4 mb-4 flex-wrap text-gray-400">

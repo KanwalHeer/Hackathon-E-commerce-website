@@ -376,6 +376,7 @@ export default function UserInfo() {
             <div className="text-lg text-gray-700">               <div><strong className="font-semibold text-gray-900">Name:</strong> {user?.name}</div>
                <div><strong className="font-semibold text-gray-900">Email:</strong> {user?.email}</div>
                <div><strong className="font-semibold text-gray-900">Phone:</strong> {user?.phoneNumber || "Not Provided"}</div>
+               <Link href={'/dashboard/profile'} className="text-blue-600 hover:underline">Manageb your Profile</Link>
              </div>
            </div>
 
@@ -385,6 +386,7 @@ export default function UserInfo() {
              <div className="text-lg text-gray-700">
                <div className="mb-4"><div className="font-semibold">Order #12345</div><div className="text-gray-500">Status: Shipped</div><div className="text-gray-500">Total: $350</div></div>
                <div className="mb-4"><div className="font-semibold">Order #12346</div><div className="text-gray-500">Status: Delivered</div><div className="text-gray-500">Total: $199</div></div>
+               <Link href={'/dashboard/orders'} className="text-blue-600 hover:underline">View order History</Link>
              </div>
            </div>
 
@@ -393,7 +395,7 @@ export default function UserInfo() {
              <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Login & Security</h2>
              <div className="text-lg text-gray-700">
                <div><strong className="font-semibold text-gray-900">Change Password:</strong></div>
-               <button className="text-blue-600 hover:underline">Change Password</button>
+               <Link href={'/dashboard/security'} className="text-blue-600 hover:underline">Change Password</Link>
              </div>
            </div>
 
@@ -414,6 +416,7 @@ export default function UserInfo() {
                <div className="text-gray-500">789 Pine St, Miami, FL 33101</div>
              </div>
            </div>
+           <Link href={'/dashboard/address'} className="text-blue-600 hover:underline">Change Address</Link>
          </div>
 
            {/* Payment Methods Section */}
@@ -422,8 +425,9 @@ export default function UserInfo() {
              <div className="text-lg text-gray-700">
                <div><strong className="font-semibold text-gray-900">Credit Card:</strong> Ending in 1234</div>
                <div><strong className="font-semibold text-gray-900">Paypal:</strong> Connected</div>
-               <button className="text-blue-600 hover:underline">Update Payment Methods</button>
+               <Link href={'/dashboard/payments'} className="text-blue-600 hover:underline">Update Payment Methods</Link>
              </div>
+             {/* <Link></Link> */}
            </div>
 
            {/* Templates Section */}
@@ -432,7 +436,7 @@ export default function UserInfo() {
              <div className="text-lg text-gray-700">
                <div><strong className="font-semibold text-gray-900">Current Template:</strong> Template A</div>
                <div><strong className="font-semibold text-gray-900">Change Template:</strong></div>
-               <button className="text-blue-600 hover:underline">Select Template</button>
+               <Link href={'/dashboard/wishlist'} className="text-blue-600 hover:underline">Select Template</Link>
              </div>
            </div>
          </div>

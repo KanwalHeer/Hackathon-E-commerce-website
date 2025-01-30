@@ -35,7 +35,7 @@ const Header: React.FC = () => {
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const wishlistItems = useSelector((state: RootState) => state.cart.wishlist);
   const totalQuantity = useSelector((state: any) => state.cart.totalQuantity);
- 
+  const [isHovered, setIsHovered] = useState(false); 
   if (typeof window !== "undefined") {
   if (document.cookie.includes("next-auth.session-token")) {
     console.log("Token is present in document.cookie");
@@ -45,7 +45,7 @@ const Header: React.FC = () => {
   }
 
   const handleLogout = async () => {
-   
+    handleClick()
     await signOut({ redirect: false });
     // toggleMenu()
     router.push("/auth/sign-in");
@@ -53,9 +53,13 @@ const Header: React.FC = () => {
     if (typeof window !== "undefined") {
       localStorage.removeItem("chechoutRoute");
     }
-     toggleMenu()
+    //  toggleMenu()
   };
 
+ 
+  const handleClick = () => {
+    setIsHovered(false);
+  };
   useEffect(() => {
     const query = `*[_type == "product"]{
           _id,
@@ -163,18 +167,37 @@ const Header: React.FC = () => {
         <nav className="hidden md:flex space-x-9">
           <div></div>
           {session ? (
-            <div className="text-yellow-600 font-bold text-[16px] md:text-[16px] lg:text-[20px] flex justify-center flex-row gap-2 md:gap-0 mb-2">
-              {session.user.email === user ? (
-                <>
-                  <Link href={"/adminPanel"}>Admin</Link>
-                  <button className="font-normal px-3" onClick={handleLogout}>
-                    Logout
+          <div className="text-yellow-600 font-bold text-[16px] md:text-[16px] lg:text-[20px] flex justify-center flex-row gap-2 md:gap-0 mb-2 relative">
+          {/* User's name and dropdown menu container */}
+          <div
+            onMouseEnter={() => setIsHovered(true)} // Show dropdown on hover
+            // onMouseLeave={() => setIsHovered(false)} // Hide dropdown when not hovered
+            className="cursor-pointer relative"
+          >
+            <div onClick={handleClick}>{session.user?.name}</div>
+            
+            {/* Floating Menu */}
+            {isHovered && (
+              <div className="absolute top-full mt-2 right-0 bg-white border border-gray-300 rounded-md shadow-lg w-[150px]">
+                <ul className="list-none p-2">
+                  {/* Dashboard Link */}
+                  <li className="p-2 hover:bg-gray-200 rounded-md" onClick={handleClick}>
+                    <Link href="/dashboard">
+                      Dashboard
+                    </Link>
+                  </li>
+                  {/* Logout Link */}
+                  <button className="p-2 hover:bg-gray-200 rounded-md" onClick={handleLogout}>
+                   
+                     Logout
+                   
                   </button>
-                </>
-              ) : (
-                <Link href={"/dashboard"}>{session.user?.name}</Link>
-              )}
-            </div>
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
+         
           ) : (
             <Link
               href="/auth/sign-in"
@@ -258,7 +281,7 @@ const Header: React.FC = () => {
       )}
 
       {searchQuery && isMenuOpen && !isDeatai && (
-        <div className="mt-4 p-4 bg-white rounded-md shadow-md">
+        <div className="mt-4 p-4  bg-white rounded-md shadow-md">
           <h2 className="text-xl font-semibold mb-2">Search Results</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredProducts.length > 0 ? (
@@ -390,7 +413,7 @@ const Header: React.FC = () => {
       )}
       {/* Display filtered products (can be a separate component or section) */}
       {searchQuery && !isDeatai && (
-        <div className="mt-4 p-4 bg-white rounded-md shadow-md">
+        <div className="mt-4 p-4 w-fit mx-auto bg-white rounded-md shadow-md">
           <h2 className="text-xl font-semibold mb-2">Search Results</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredProducts.length > 0 ? (
