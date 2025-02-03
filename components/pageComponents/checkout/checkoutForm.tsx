@@ -38,13 +38,10 @@ const CheckoutForm: React.FC = () => {
   const handleOrderConfirmation = () => {
     setOrderPlaced(true); 
     setShowModal(false);
-
-    
     setTimeout(() => {
       setOrderPlaced(false); 
     }, 5000); 
   };
-
   const handleContinueShopping = () => {
     router.push("/products"); 
   };
@@ -95,20 +92,14 @@ const CheckoutForm: React.FC = () => {
     // Add any additional charges like rateAmount if applicable
     return subtotal + (rateAmount || 0);
   };
-
   const subtotal = calculateSubtotal();
- 
-
   const [showModal, setShowModal] = useState(false); 
-
-  
   const calculateTotalQuantity = () => {
     return cartItems.reduce(
       (total: any, item: any) => total + item.quantity,
       0
     );
   };
-
   const calculateTotalDiscount = () => {
     return cartItems.reduce((total: any, item: any) => {
       const itemPrice = Number(item?.price) * Number(item?.quantity);
@@ -118,19 +109,18 @@ const CheckoutForm: React.FC = () => {
       return total + discountAmount;
     }, 0);
   };
-
-  
-
   const totalQuantity = calculateTotalQuantity();
   const totalDiscount = calculateTotalDiscount();
   const total = subtotal - totalDiscount + (rateAmount || 0); 
+
+  console.log(rateId,"rateId");
+  
 
   const handleCreateLabel = async () => {
     if (!rateId) {
       alert("Please select a rate to create a label.");
       return;
     }
-
     setLoading(true);
     setErrors([]);
 
@@ -153,6 +143,9 @@ const CheckoutForm: React.FC = () => {
     }
   };
 
+const placeOrderHandler = ()=>{
+  alert("place order done")
+}
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors([]);
@@ -170,6 +163,9 @@ const CheckoutForm: React.FC = () => {
         ],
       });
       setRates(response.data.rateResponse.rates);
+      placeOrderHandler()
+      console.log(response.data,"response");
+      
     } catch (error) {
       console.error(error);
       setErrors(["An error occurred while fetching rates."]);

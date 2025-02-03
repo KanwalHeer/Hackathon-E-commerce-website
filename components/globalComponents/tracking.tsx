@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import axios from "axios";
 import { useSearchParams, useRouter } from "next/navigation";
+// import { log } from "console";
 // import { TrackingData } from "../../../type";
 
 export function TrackShipment() {
@@ -15,6 +16,7 @@ export function TrackShipment() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const queryLabelId = searchParams?.get("labelId") || ""; // Safely fetch labelId
+console.log(queryLabelId,"queryLabelId");
 
   // Function to handle form submission
   const handleSubmit = async (labelId: string) => {
@@ -28,10 +30,10 @@ export function TrackShipment() {
 
     try {
       // Update the URL with the labelId query parameter without scrolling
-      router.replace(`/cart/checkOut?labelId=${labelId}`); // No scroll option
+      router.replace(`/checkout?labelId=${labelId}`); // No scroll option
 
       // Make API request to track shipment
-      const response = await axios.get(`/api/shipengine/tracking/${labelId}`);
+      const response = await axios.get(`/api/tracking/${labelId}`);
       setTrackingData(response.data); // Set tracking data
     } catch (err) {
       console.error("Error tracking shipment:", err);
