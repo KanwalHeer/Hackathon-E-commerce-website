@@ -69,7 +69,7 @@ const CheckoutForm: React.FC = () => {
 
 
 
-  
+
   const [shipToAddress, setShipToAddress] = useState<ShipToAddress>({
     name: "",
     phone: "",
@@ -155,7 +155,7 @@ const CheckoutForm: React.FC = () => {
       });
     } catch (error) {
       console.error(error);
-      setErrors(["An error occurred while creating the label."]);
+      setErrors(["An error occurred due to server issue while creating the label.Please try again later!"]);
     } finally {
       setLoading(false);
     }
@@ -439,6 +439,7 @@ const CheckoutForm: React.FC = () => {
                     >
                       {loading ? "Creating Label..." : "Create Label"}
                     </button>
+                    {errors && (<p className="text-red-500 text-center font-samibold mt-8">{errors}</p>)}
                   </div>
                 )}
 
