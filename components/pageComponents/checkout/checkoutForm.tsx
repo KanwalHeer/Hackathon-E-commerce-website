@@ -62,6 +62,7 @@ const CheckoutForm: React.FC = () => {
     setTimeout(() => {
       setOrderPlaced(false);
     }, 5000);
+    router.push("/products");
   };
   const handleContinueShopping = () => {
     router.push("/products");
@@ -207,6 +208,7 @@ const CheckoutForm: React.FC = () => {
         },
         productPrice: item.price,
         productTitle: item.title,
+        productId:item._id,
         dicountPercentage: item.dicountPercentage || 0,
         userId: session?.user?.email || "default-user-id",
         userEmail: session?.user?.email || "default-email@example.com",

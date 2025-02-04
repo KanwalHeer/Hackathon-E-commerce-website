@@ -1,6 +1,7 @@
 
 import { createClient } from '@sanity/client';
 import dotenv from 'dotenv';
+import { product } from '../sanity/schemaTypes/products/products';
 dotenv.config();
 
 const  client = createClient({
@@ -14,6 +15,7 @@ const  client = createClient({
 
 interface OrderData {
   productImage: any; 
+  productId:any
   productPrice: number;
   productTitle: string;
   dicountPercentage: number;
@@ -31,6 +33,7 @@ async function postOrderData(orderData: OrderData) {
       _type: 'orders',
       productImage: orderData.productImage,
       productPrice: orderData.productPrice,
+      productId:orderData.productId,
       productTitle: orderData.productTitle,
       dicountPercentage: orderData.dicountPercentage,
       userId: orderData.userId,

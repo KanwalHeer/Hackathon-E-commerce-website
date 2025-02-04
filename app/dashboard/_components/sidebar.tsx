@@ -1,7 +1,7 @@
 
 "use client"
 
-import { FaBars, FaTimes } from "react-icons/fa"; 
+import { FaTimes } from "react-icons/fa"; 
 import { useState } from "react";
 import { MdArrowForwardIos } from "react-icons/md";
 import { FaUser, FaBox, FaShieldAlt, FaHeart, FaCreditCard, FaMapMarkedAlt, FaSignOutAlt } from "react-icons/fa";
@@ -9,7 +9,7 @@ import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-// import { MdArrowForwardIos } from "react-icons/md";
+
 
 
 
@@ -55,19 +55,19 @@ const Sidebar: React.FC = () => {
         </div>
 
         {/* Navigation Links */}
-        <nav className="flex flex-col p-4 space-y-4">
+        <nav className="flex flex-col  space-y-2">
            <Link
-            href="/profile"
+            href="/dashboard/profile"
             className="flex items-center  text-white hover:bg-yellow-500 px-4 py-2 rounded-md "
           >
-            <FaUser className="mr-4 text-xl" />
+            <FaUser className="mr-4 text-2xl" />
             <span className="">Profile</span>
           </Link>
           <Link
             href="/dashboard/orders"
             className="flex items-center  text-white hover:bg-yellow-500 px-4 py-2 rounded-md "
           >
-            <FaBox className="mr-4 text-xl" />
+            <FaBox className="mr-4 text-2xl" />
             <span className="">Order History</span>
           </Link>
           <Link
@@ -81,21 +81,21 @@ const Sidebar: React.FC = () => {
             href="/dashboard/wishlist"
             className="flex items-center  text-white hover:bg-yellow-500 px-4 py-2 rounded-md "
           >
-            <FaHeart className="mr-4 text-xl" />
+            <FaHeart className="mr-4 text-2xl" />
             <span className="">Wishlist</span>
           </Link>
           <Link
             href="/dashboard/payments"
             className="flex items-center  text-white hover:bg-yellow-500 px-4 py-2 rounded-md "
           >
-            <FaCreditCard className="mr-4 text-xl" />
+            <FaCreditCard className="mr-4 text-2xl" />
             <span className="">Payment Methods</span>
           </Link>
           <Link
             href="/dashboard/address"
             className="flex items-center  text-white hover:bg-yellow-500 px-4 py-2 rounded-md "
           >
-            <FaMapMarkedAlt className="mr-4 text-xl" />
+            <FaMapMarkedAlt className="mr-4 text-2xl" />
             <span className="">Addresses</span>
           </Link>
 
@@ -103,7 +103,7 @@ const Sidebar: React.FC = () => {
             onClick={handleLogout}
             className="flex items-center  text-white hover:bg-yellow-500 px-4 py-2 rounded-md "
           >
-            <FaSignOutAlt className="mr-4 text-xl" />
+            <FaSignOutAlt className="mr-4 text-2xl" />
             <span className="">Log Out</span>
           </button>
         </nav>

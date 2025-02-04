@@ -19,6 +19,11 @@ export const orders: SchemaTypeDefinition = {
       type: 'number', 
     },
     {
+      name: 'productId',
+      title: 'Product Id',
+      type: 'string', 
+    },
+    {
       name: 'productTitle',
       title: 'Product Title',
       type: 'string',
