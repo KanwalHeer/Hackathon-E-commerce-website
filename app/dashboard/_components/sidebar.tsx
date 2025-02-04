@@ -11,7 +11,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 // import { MdArrowForwardIos } from "react-icons/md";
 
-  
+
 
 const Sidebar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -108,7 +108,7 @@ const Sidebar: React.FC = () => {
           </button>
         </nav>
       </div>
-
+     
       {/* Hamburger Menu (on mobile) */}
       <button
       title="button"

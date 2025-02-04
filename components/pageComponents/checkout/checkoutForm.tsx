@@ -7,7 +7,12 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { TrackShipment } from "@/components/globalComponents/tracking";
+import { postOrderData } from "@/helper/placeOrder";
+import { signOut, useSession } from "next-auth/react";
+import { createClient } from '@sanity/client';
+import dotenv from 'dotenv';
 
+  
 interface ShipToAddress {
   name: string;
   phone: string;
@@ -34,6 +39,18 @@ const CheckoutForm: React.FC = () => {
   const router = useRouter();
   console.log(cartItems, "cartItems");
   const [orderPlaced, setOrderPlaced] = useState(false);
+  const [isOrder,setIsOrder] =useState(false)
+  const { data: session } = useSession();
+  dotenv.config();
+// import { client } from "@/sanity/lib/client";
+const  client = createClient({
+  projectId:process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+  dataset:process.env.NEXT_PUBLIC_SANITY_DATASET,
+  apiVersion: '2025-01-17',
+  useCdn: true, 
+  token:process.env.NEXT_PUBLIC_SANITY_TOKEN
+})
+console.log(rateAmount,"rateAmount");
 
   const handleOrderConfirmation = () => {
     setOrderPlaced(true); 
@@ -143,16 +160,82 @@ const CheckoutForm: React.FC = () => {
     }
   };
 
-const placeOrderHandler = ()=>{
-  alert("place order done")
-}
+
+
+
+  async function uploadImageToSanity(imageUrl: any) {
+    try {
+      console.log(`Uploading image: ${imageUrl}`);
+      const response = await fetch(imageUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch image: ${imageUrl}`);
+      }
+      const buffer = await response.arrayBuffer();
+      const bufferImage = Buffer.from(buffer);
+      const asset = await client.assets.upload('image', bufferImage, {
+        filename: imageUrl.split('/').pop(),
+      });
+      console.log(`Image uploaded successfully: ${asset._id}`);
+      return asset._id;
+    } catch (error) {
+      console.error('Failed to upload image:', imageUrl, error);
+      return null;
+    }
+  }
+  
+  const placeOrderHandler = async () => {
+    // Loop through cartItems and post each order individually
+    for (const item of cartItems) {
+      const imageRef = await uploadImageToSanity(item.productImage.asset?.url);
+  
+      if (!imageRef) {
+        console.error('Failed to upload image');
+        return; // Stop if image upload fails
+      }
+  
+      const placedOrder = {
+        productImage: {
+          _type: 'image',
+          asset: {
+            _ref: imageRef,  
+          },
+        },
+        productPrice: item.price,
+        productTitle: item.title,
+        dicountPercentage: item.dicountPercentage || 0,
+        userId: session?.user?.email || 'default-user-id',  // Fallback value for userId
+        userEmail: session?.user?.email || 'default-email@example.com',  // Fallback value for userEmail
+        userName: shipToAddress.name,
+        userAddress: `${shipToAddress.addressLine1}, ${shipToAddress.cityLocality}, ${shipToAddress.stateProvince}, ${shipToAddress.postalCode}, ${shipToAddress.countryCode}`,
+        userPhoneNumber: shipToAddress.phone,
+      };
+  
+      // Log placed order to check
+      console.log('Placing Order:', placedOrder);
+  
+      // Post each order individually to Sanity
+      await postOrderData(placedOrder);  // Ensure you await postOrderData if it's asynchronous
+    }
+  
+    alert("Place order done");
+  };
+  
+  console.log(isOrder,"order done");
+  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    
     e.preventDefault();
     setErrors([]);
     setRates([]);
     setShippingButText("Fetching Rates...");
-
+  
+    
+  
+    setLoading(true);
+    setErrors([]);
+  
     try {
+      // Send the request to the server to fetch rates
       const response = await axios.post("/api/get-rates", {
         shipToAddress,
         packages: [
@@ -162,9 +245,15 @@ const placeOrderHandler = ()=>{
           },
         ],
       });
+  
       setRates(response.data.rateResponse.rates);
-      placeOrderHandler()
-      console.log(response.data,"response");
+      setShippingButText("Continue Shipping");
+    
+      // Post order data to Sanity
+      // setIsOrder(true)
+      // placeOrderHandler();  
+  
+      console.log(response.data, "response");
       
     } catch (error) {
       console.error(error);
@@ -173,6 +262,11 @@ const placeOrderHandler = ()=>{
       setLoading(false);
     }
   };
+  
+
+
+
+
 
   return (
     <main className="max-w-[1920px] mx-auto">
@@ -379,6 +473,7 @@ const placeOrderHandler = ()=>{
                     <button
                       onClick={() => {
                         setIsConfirm(true);
+                        setIsOrder(true)
                         router.push(
                           `/checkout/?labelId=${trackingObj.labelId}`
                         );
@@ -472,7 +567,12 @@ const placeOrderHandler = ()=>{
                 <h3 className="font-medium">Total Discount:</h3>
                 <h3 className="font-bold">${totalDiscount.toFixed(2)}</h3>
               </div>
-
+              {rateAmount  > 0 &&
+              <div className="flex justify-between text-[#1D3178] py-2 border-b border-[#d0ced4]">
+                <h3 className="font-medium">Ship Charges:</h3>
+                <h3 className="font-bold">${rateAmount.toFixed(2)}</h3>
+              </div>
+                }
               {/* Subtotal */}
               <div className="flex justify-between text-[#1D3178] py-2 border-b border-[#d0ced4]">
                 <h3 className="font-medium">Subtotals:</h3>
@@ -498,11 +598,21 @@ const placeOrderHandler = ()=>{
 
               {/* Place Order Button */}
               <button
-                className="w-full text-[16px] bg-yellow-600 hover:bg-yellow-700 text-white py-3 mt-6 rounded-md"
-                onClick={() => setShowModal(true)}
-              >
-                Place Order
-              </button>
+  className={`w-full text-[16px] py-3 mt-6 rounded-md ${
+    isOrder
+      ? 'bg-yellow-600 hover:bg-yellow-700 text-white'  // Enable styles
+      : 'bg-gray-400 cursor-not-allowed'  // Disable styles
+  }`}
+  onClick={() => {
+    if (!isOrder) return; // Prevent action if order is not placed yet
+    setShowModal(true);
+    placeOrderHandler();
+  }}
+  disabled={!isOrder}  // Disable the button if orderPlaced is false
+>
+  Place Order
+</button>
+
             </div>
           </div>
         </div>
@@ -535,6 +645,7 @@ const placeOrderHandler = ()=>{
         </div>
       )}
 
+     
       {/* Order Confirmation Message */}
       {orderPlaced && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
