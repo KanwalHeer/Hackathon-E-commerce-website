@@ -1,10 +1,8 @@
 
-// import { client } from '@/sanity/lib/client';
-
 import { createClient } from '@sanity/client';
 import dotenv from 'dotenv';
 dotenv.config();
-// import { client } from "@/sanity/lib/client";
+
 const  client = createClient({
   projectId:process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
   dataset:process.env.NEXT_PUBLIC_SANITY_DATASET,
@@ -13,7 +11,7 @@ const  client = createClient({
   token:process.env.NEXT_PUBLIC_SANITY_TOKEN
 })
   
-// Define the type of the data you want to post
+
 interface OrderData {
   productImage: any; 
   productPrice: number;
@@ -26,7 +24,7 @@ interface OrderData {
   userPhoneNumber: string;
 }
 
-// Function to post the order data to Sanity
+
 async function postOrderData(orderData: OrderData) {
   try {
     const response = await client.create({

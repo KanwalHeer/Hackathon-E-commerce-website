@@ -8,11 +8,10 @@ import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { TrackShipment } from "@/components/globalComponents/tracking";
 import { postOrderData } from "@/helper/placeOrder";
-import { signOut, useSession } from "next-auth/react";
-import { createClient } from '@sanity/client';
-import dotenv from 'dotenv';
+import { useSession } from "next-auth/react";
+import { createClient } from "@sanity/client";
+import dotenv from "dotenv";
 
-  
 interface ShipToAddress {
   name: string;
   phone: string;
@@ -37,32 +36,40 @@ const CheckoutForm: React.FC = () => {
   const [shippingButText, setShippingButText] = useState("Continue Shipping");
   const cartItems = useSelector((state: any) => state.cart.items);
   const router = useRouter();
-  console.log(cartItems, "cartItems");
   const [orderPlaced, setOrderPlaced] = useState(false);
-  const [isOrder,setIsOrder] =useState(false)
+  const [isOrder, setIsOrder] = useState(false);
   const { data: session } = useSession();
   dotenv.config();
-// import { client } from "@/sanity/lib/client";
-const  client = createClient({
-  projectId:process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
-  dataset:process.env.NEXT_PUBLIC_SANITY_DATASET,
-  apiVersion: '2025-01-17',
-  useCdn: true, 
-  token:process.env.NEXT_PUBLIC_SANITY_TOKEN
-})
-console.log(rateAmount,"rateAmount");
+
+
+
+
+  const client = createClient({
+    projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+    dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
+    apiVersion: "2025-01-17",
+    useCdn: true,
+    token: process.env.NEXT_PUBLIC_SANITY_TOKEN,
+  });
+
+
+
+
 
   const handleOrderConfirmation = () => {
-    setOrderPlaced(true); 
+    setOrderPlaced(true);
     setShowModal(false);
     setTimeout(() => {
-      setOrderPlaced(false); 
-    }, 5000); 
+      setOrderPlaced(false);
+    }, 5000);
   };
   const handleContinueShopping = () => {
-    router.push("/products"); 
+    router.push("/products");
   };
 
+
+
+  
   const [shipToAddress, setShipToAddress] = useState<ShipToAddress>({
     name: "",
     phone: "",
@@ -75,6 +82,9 @@ console.log(rateAmount,"rateAmount");
     addressResidentialIndicator: "yes",
   });
 
+
+
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setShipToAddress((prevData) => ({
@@ -83,40 +93,35 @@ console.log(rateAmount,"rateAmount");
     }));
   };
 
+
+
+
+
   const calculateSubtotal = (): number => {
     const subtotal = cartItems.reduce((total: number, item: any) => {
-      // Log the item and its properties for debugging
-      console.log(item?.title, "item title");
-      console.log(item?.dicountPercentage, "discountPercentage for this item");
-
       const itemPrice = Number(item?.price) * Number(item?.quantity);
-
-      // Apply discount if discountPercentage exists and is valid
       const discountAmount =
         item?.dicountPercentage && !isNaN(item?.dicountPercentage)
           ? itemPrice * (Number(item?.dicountPercentage) / 100)
           : 0;
-
-      console.log(discountAmount, "discountAmount");
-
-      // Subtract the discount from the item price
       const priceAfterDiscount = itemPrice - discountAmount;
-
-      // Add the discounted price to the total
       return total + priceAfterDiscount;
     }, 0);
-
-    // Add any additional charges like rateAmount if applicable
     return subtotal + (rateAmount || 0);
   };
   const subtotal = calculateSubtotal();
-  const [showModal, setShowModal] = useState(false); 
+  const [showModal, setShowModal] = useState(false);
   const calculateTotalQuantity = () => {
     return cartItems.reduce(
       (total: any, item: any) => total + item.quantity,
       0
     );
   };
+
+
+
+
+
   const calculateTotalDiscount = () => {
     return cartItems.reduce((total: any, item: any) => {
       const itemPrice = Number(item?.price) * Number(item?.quantity);
@@ -128,10 +133,7 @@ console.log(rateAmount,"rateAmount");
   };
   const totalQuantity = calculateTotalQuantity();
   const totalDiscount = calculateTotalDiscount();
-  const total = subtotal - totalDiscount + (rateAmount || 0); 
-
-  console.log(rateId,"rateId");
-  
+  const total = subtotal - totalDiscount + (rateAmount || 0);
 
   const handleCreateLabel = async () => {
     if (!rateId) {
@@ -140,7 +142,6 @@ console.log(rateAmount,"rateAmount");
     }
     setLoading(true);
     setErrors([]);
-
     try {
       const response = await axios.post("/api/create-label", {
         rateId: rateId,
@@ -163,6 +164,7 @@ console.log(rateAmount,"rateAmount");
 
 
 
+
   async function uploadImageToSanity(imageUrl: any) {
     try {
       console.log(`Uploading image: ${imageUrl}`);
@@ -172,70 +174,65 @@ console.log(rateAmount,"rateAmount");
       }
       const buffer = await response.arrayBuffer();
       const bufferImage = Buffer.from(buffer);
-      const asset = await client.assets.upload('image', bufferImage, {
-        filename: imageUrl.split('/').pop(),
+      const asset = await client.assets.upload("image", bufferImage, {
+        filename: imageUrl.split("/").pop(),
       });
       console.log(`Image uploaded successfully: ${asset._id}`);
       return asset._id;
     } catch (error) {
-      console.error('Failed to upload image:', imageUrl, error);
+      console.error("Failed to upload image:", imageUrl, error);
       return null;
     }
   }
-  
+
+
+
+
+
+
   const placeOrderHandler = async () => {
-    // Loop through cartItems and post each order individually
     for (const item of cartItems) {
       const imageRef = await uploadImageToSanity(item.productImage.asset?.url);
-  
+
       if (!imageRef) {
-        console.error('Failed to upload image');
-        return; // Stop if image upload fails
+        console.error("Failed to upload image");
+        return;
       }
-  
       const placedOrder = {
         productImage: {
-          _type: 'image',
+          _type: "image",
           asset: {
-            _ref: imageRef,  
+            _ref: imageRef,
           },
         },
         productPrice: item.price,
         productTitle: item.title,
         dicountPercentage: item.dicountPercentage || 0,
-        userId: session?.user?.email || 'default-user-id',  // Fallback value for userId
-        userEmail: session?.user?.email || 'default-email@example.com',  // Fallback value for userEmail
+        userId: session?.user?.email || "default-user-id",
+        userEmail: session?.user?.email || "default-email@example.com",
         userName: shipToAddress.name,
         userAddress: `${shipToAddress.addressLine1}, ${shipToAddress.cityLocality}, ${shipToAddress.stateProvince}, ${shipToAddress.postalCode}, ${shipToAddress.countryCode}`,
         userPhoneNumber: shipToAddress.phone,
       };
-  
-      // Log placed order to check
-      console.log('Placing Order:', placedOrder);
-  
-      // Post each order individually to Sanity
-      await postOrderData(placedOrder);  // Ensure you await postOrderData if it's asynchronous
+      await postOrderData(placedOrder);
     }
-  
-    alert("Place order done");
   };
-  
-  console.log(isOrder,"order done");
-  
+
+
+
+
+
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    
     e.preventDefault();
     setErrors([]);
     setRates([]);
     setShippingButText("Fetching Rates...");
-  
-    
-  
+
     setLoading(true);
     setErrors([]);
-  
+
     try {
-      // Send the request to the server to fetch rates
       const response = await axios.post("/api/get-rates", {
         shipToAddress,
         packages: [
@@ -245,16 +242,9 @@ console.log(rateAmount,"rateAmount");
           },
         ],
       });
-  
       setRates(response.data.rateResponse.rates);
       setShippingButText("Continue Shipping");
-    
-      // Post order data to Sanity
-      // setIsOrder(true)
-      // placeOrderHandler();  
-  
       console.log(response.data, "response");
-      
     } catch (error) {
       console.error(error);
       setErrors(["An error occurred while fetching rates."]);
@@ -262,7 +252,6 @@ console.log(rateAmount,"rateAmount");
       setLoading(false);
     }
   };
-  
 
 
 
@@ -473,7 +462,7 @@ console.log(rateAmount,"rateAmount");
                     <button
                       onClick={() => {
                         setIsConfirm(true);
-                        setIsOrder(true)
+                        setIsOrder(true);
                         router.push(
                           `/checkout/?labelId=${trackingObj.labelId}`
                         );
@@ -491,7 +480,6 @@ console.log(rateAmount,"rateAmount");
           </div>
 
           <div className="lg:w-[60%] w-full p-4">
-            {/* Cart Items Section */}
             {cartItems.map((item: any) => {
               const itemPrice = item?.quantity * Number(item?.price);
               const discountAmount =
@@ -505,7 +493,6 @@ console.log(rateAmount,"rateAmount");
                   key={item?._id}
                   className="bg-[#E1E1E4] px-4 py-3 mb-6 rounded-lg shadow-md flex justify-between items-center"
                 >
-                  {/* Image & Item Details */}
                   <div className="flex gap-4 items-center">
                     <Image
                       src={item?.productImage.asset?.url}
@@ -526,19 +513,15 @@ console.log(rateAmount,"rateAmount");
                     </div>
                   </div>
 
-                  {/* Pricing & Discount */}
                   <div className="text-right">
-                    {/* Original Price */}
                     <div className="text-sm text-[#A1A8C1] line-through">
                       ${itemPrice.toFixed(2)}
                     </div>
 
-                    {/* Discounted Price */}
                     <div className="text-lg font-bold text-[#15245E]">
                       ${priceAfterDiscount.toFixed(2)}
                     </div>
 
-                    {/* Discount Info */}
                     {discountAmount > 0 && (
                       <div className="text-xs text-green-600 mt-2">
                         You save ${discountAmount.toFixed(2)} (
@@ -567,12 +550,13 @@ console.log(rateAmount,"rateAmount");
                 <h3 className="font-medium">Total Discount:</h3>
                 <h3 className="font-bold">${totalDiscount.toFixed(2)}</h3>
               </div>
-              {rateAmount  > 0 &&
-              <div className="flex justify-between text-[#1D3178] py-2 border-b border-[#d0ced4]">
-                <h3 className="font-medium">Ship Charges:</h3>
-                <h3 className="font-bold">${rateAmount.toFixed(2)}</h3>
-              </div>
-                }
+              {/* ship charges  */}
+              {rateAmount > 0 && (
+                <div className="flex justify-between text-[#1D3178] py-2 border-b border-[#d0ced4]">
+                  <h3 className="font-medium">Ship Charges:</h3>
+                  <h3 className="font-bold">${rateAmount.toFixed(2)}</h3>
+                </div>
+              )}
               {/* Subtotal */}
               <div className="flex justify-between text-[#1D3178] py-2 border-b border-[#d0ced4]">
                 <h3 className="font-medium">Subtotals:</h3>
@@ -598,21 +582,20 @@ console.log(rateAmount,"rateAmount");
 
               {/* Place Order Button */}
               <button
-  className={`w-full text-[16px] py-3 mt-6 rounded-md ${
-    isOrder
-      ? 'bg-yellow-600 hover:bg-yellow-700 text-white'  // Enable styles
-      : 'bg-gray-400 cursor-not-allowed'  // Disable styles
-  }`}
-  onClick={() => {
-    if (!isOrder) return; // Prevent action if order is not placed yet
-    setShowModal(true);
-    placeOrderHandler();
-  }}
-  disabled={!isOrder}  // Disable the button if orderPlaced is false
->
-  Place Order
-</button>
-
+                className={`w-full text-[16px] py-3 mt-6 rounded-md ${
+                  isOrder
+                    ? "bg-yellow-600 hover:bg-yellow-700 text-white"
+                    : "bg-gray-400 cursor-not-allowed"
+                }`}
+                onClick={() => {
+                  if (!isOrder) return;
+                  setShowModal(true);
+                  placeOrderHandler();
+                }}
+                disabled={!isOrder}
+              >
+                Place Order
+              </button>
             </div>
           </div>
         </div>
@@ -630,13 +613,13 @@ console.log(rateAmount,"rateAmount");
             <div className="flex justify-between">
               <button
                 className="text-white bg-gray-600 hover:bg-gray-700 py-2 px-4 rounded-md"
-                onClick={handleContinueShopping} 
+                onClick={handleContinueShopping}
               >
                 Continue Shopping
               </button>
               <button
                 className="text-white bg-yellow-600 hover:bg-yellow-700 py-2 px-4 rounded-md"
-                onClick={handleOrderConfirmation} 
+                onClick={handleOrderConfirmation}
               >
                 Confirm Order
               </button>
@@ -645,7 +628,6 @@ console.log(rateAmount,"rateAmount");
         </div>
       )}
 
-     
       {/* Order Confirmation Message */}
       {orderPlaced && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
