@@ -2,11 +2,12 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { FaShareAlt, FaRegHeart, FaRegClone } from "react-icons/fa";
-import { TbArrowsRightLeft } from "react-icons/tb";
+import { FaRegHeart } from "react-icons/fa";
 import TruncateDescription from "../truncateDescription";
-import { addToWishlist,addToCart } from "@/redux/cartSlice";
-import { useDispatch, UseDispatch } from "react-redux";
+import { addToWishlist } from "@/redux/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCompare, removeFromCompare } from "@/redux/cartSlice";
+
 // types.ts
 export interface ProductImage {
   asset: {
@@ -22,8 +23,8 @@ export interface Product {
   productImage: ProductImage;
   price: number;
   tags: string[];
-  dicountPercentage?: number; 
-  isNew?: boolean; 
+  dicountPercentage?: number;
+  isNew?: boolean;
 }
 
 interface ProductGridProps {
@@ -37,13 +38,21 @@ const ProductGrid: React.FC<ProductGridProps> = ({
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isProductsPage, setIsProductsPage] = useState(false);
-  const dispatch = useDispatch()
+  const compareProducts = useSelector((state: any) => state.cart.compare);
+  const dispatch = useDispatch();
+  const [cartAdded, setcartAdded] = useState(false);
+
+  // Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [addedProduct, setAddedProduct] = useState<any>(null);
+
   useEffect(() => {
     // Check if the current page is '/products'
     if (typeof window !== "undefined") {
       setIsProductsPage(window.location.pathname === "/products");
     }
   }, []);
+
   const totalPages = Math.ceil(products.length / itemsPerPage);
 
   // Get current products based on page and items per page
@@ -60,24 +69,41 @@ const ProductGrid: React.FC<ProductGridProps> = ({
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
-   const [cartAdded, setcartAdded] = useState(false);
-   
-  
-    const handlCartAdded = () => {
-      setcartAdded(true); 
-     
-  
-      
-      setTimeout(() => {
-        setcartAdded(false); 
-      }, 3000); 
-    };
-  const handleAddToWishlist = (product:any) => {
-    dispatch(addToWishlist(product));
-    handlCartAdded()
+  const handlCartAdded = () => {
+    setcartAdded(true);
+
+    setTimeout(() => {
+      setcartAdded(false);
+    }, 3000);
   };
 
+  const handleAddToWishlist = (product: any) => {
+    dispatch(addToWishlist(product));
+    handlCartAdded();
+  };
 
+  const handleAddToCompare = (product: any) => {
+    dispatch(addToCompare(product));
+    setAddedProduct(product); 
+    setIsModalOpen(true); 
+  };
+
+  const handleRemoveFromCompare = (productId: any) => {
+    dispatch(removeFromCompare(productId));
+  };
+
+  const isProductInCompare = (productId: string) => {
+    return compareProducts.some((product: any) => product._id === productId);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const redirectToComparePage = () => {
+    setIsModalOpen(false);
+    window.location.href = "/compare"; 
+  };
 
   return (
     <div className="py-12 mx-4">
@@ -93,18 +119,18 @@ const ProductGrid: React.FC<ProductGridProps> = ({
                 <Image
                   src={product.productImage?.asset?.url}
                   alt={product.title}
-                  width={100}
-                  height={100}
+                  width={300}
+                  height={300}
                   className="w-full h-full object-cover"
                 />
                 {/* Status Circle */}
                 <div
                   className={`absolute top-4 right-4 w-8 text-[12px] h-8 flex items-center justify-center rounded-full text-white ${
-                    product.isNew 
+                    product.isNew
                       ? "bg-green-500"
                       : product.dicountPercentage
-                      ? "bg-red-500"
-                      : "bg-yellow-500"
+                        ? "bg-red-500"
+                        : "bg-yellow-500"
                   }`}
                 >
                   {product.isNew ? (
@@ -118,8 +144,10 @@ const ProductGrid: React.FC<ProductGridProps> = ({
                 <h3 className="text-lg font-bold text-gray-800 mb-1">
                   {product.title}
                 </h3>
-                <TruncateDescription description={product.description} lines={20} />
-                {/* <p className="text-gray-600 mb-2">{product.description}</p> */}
+                <TruncateDescription
+                  description={product.description}
+                  lines={20}
+                />
                 <p className="text-xl font-semibold text-gray-800 mb-4">
                   ${product.price}
                 </p>
@@ -129,29 +157,31 @@ const ProductGrid: React.FC<ProductGridProps> = ({
               <div className="absolute inset-0 bg-black bg-opacity-60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out flex flex-col items-center justify-center">
                 {/* Add to Cart Button */}
                 <button className="py-2 px-4 bg-white text-yellow-700 rounded-lg hover:underline transition-colors mb-4">
-                  <Link href={`/products/${product._id}`}>Add to Cart</Link>
+                  <Link href={`/products/${product._id}`}>View Product</Link>
                 </button>
                 <div className="flex justify-between gap-8 items-center px-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
                   <div className="flex justify-center items-center gap-1 hover:underline">
-                    <button>Share</button>
-                    <span>
-                      <FaShareAlt className="cursor-pointer hover:text-blue-600" />
-                    </span>
-                  </div>
-                  <div className="flex justify-center items-center gap-1 hover:underline">
-                    <button>
-                      <Link href={"/compare"}>Compare</Link>
+                    <button
+                      onClick={() =>
+                        isProductInCompare(product._id)
+                          ? handleRemoveFromCompare(product._id)
+                          : handleAddToCompare(product)
+                      }
+                    >
+                      <span></span>
+                      <span className="ml-6">
+                        {isProductInCompare(product._id)
+                          ? "Remove from Compare"
+                          : "Compare"}
+                      </span>
                     </button>
-                    <span>
-                      <TbArrowsRightLeft className="cursor-pointer hover:text-blue-600" />
+                  </div>
+
+                  <div className="flex justify-center items-center gap-1 hover:underline">
+                    <span onClick={() => handleAddToWishlist(product)}>
+                      <FaRegHeart className="cursor-pointer hover:text-yellow-600" />
                     </span>
                   </div>
-                  <div className="flex justify-center items-center gap-1 hover:underline">
-                  <span onClick={() => handleAddToWishlist(product)}>
-                    <FaRegHeart className="cursor-pointer hover:text-blue-600" />
-                  </span>
-                </div>
-
                 </div>
               </div>
             </div>
@@ -160,7 +190,6 @@ const ProductGrid: React.FC<ProductGridProps> = ({
         {/* Pagination */}
         {isProductsPage && products.length > 8 && (
           <div className="flex justify-center mt-8 gap-4 flex-wrap items-center">
-            {/* Previous Button */}
             <button
               onClick={handlePrevPage}
               disabled={currentPage === 1}
@@ -168,7 +197,6 @@ const ProductGrid: React.FC<ProductGridProps> = ({
             >
               Previous
             </button>
-            {/* Page Number Buttons */}
             <div className="flex gap-2 flex-wrap items-center">
               {[...Array(totalPages)].map((_, index) => {
                 const pageNumber = index + 1;
@@ -187,7 +215,6 @@ const ProductGrid: React.FC<ProductGridProps> = ({
                 );
               })}
             </div>
-            {/* Next Button */}
             <button
               onClick={handleNextPage}
               disabled={currentPage === totalPages}
@@ -198,18 +225,47 @@ const ProductGrid: React.FC<ProductGridProps> = ({
           </div>
         )}
       </div>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-md w-[90%] md:w-[400px]">
+            <h3 className="text-xl font-bold text-[#1D3178] mb-4">
+              Product Added to Compare
+            </h3>
+            <p className="text-[#8A91AB] text-sm mb-6">
+              The product has been successfully added to your compare list.
+            </p>
+            <div className="flex justify-between gap-4">
+              <button
+                onClick={redirectToComparePage}
+                className="py-2 px-4 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors"
+              >
+                Go to Compare
+              </button>
+              <button
+                onClick={closeModal}
+                className="py-2 px-4 bg-gray-300 text-black rounded-lg hover:bg-gray-400 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {cartAdded && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-    <div className="bg-white p-6 rounded-lg shadow-md w-[90%] md:w-[400px]">
-      <h3 className="text-xl font-bold text-[#1D3178] mb-4">
-        Item Added to Your Wishlist
-      </h3>
-      <p className="text-[#8A91AB] text-sm mb-6">
-        Your item has been successfully added to the wishlist.
-      </p>
-    </div>
-  </div>
-)}
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-md w-[90%] md:w-[400px]">
+            <h3 className="text-xl font-bold text-[#1D3178] mb-4">
+              Item Added to Your Wishlist
+            </h3>
+            <p className="text-[#8A91AB] text-sm mb-6">
+              Your item has been successfully added to the wishlist.
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

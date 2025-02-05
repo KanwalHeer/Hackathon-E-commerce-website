@@ -38,8 +38,8 @@ export default function HomeItems() {
               <Image
                 src={item.imag}
                 alt={item.text}
-                height={200}
-                width={200}
+                height={500}
+                width={500}
                 className="w-[400px] h-full object-cover transition-transform duration-300 group-hover:scale-105"
               />
             </div>

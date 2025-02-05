@@ -7,7 +7,7 @@ import BlogListing from '@/components/pageComponents/blog/blogListing'
 export default function Blog() {
   return (
     <div>
-      <Banner imageUrl='/item3.png' pageTitle='blog' currentPage='blog'pageUrl='blog'/>
+      <Banner imageUrl='/item3.png' pageTitle='Blog' currentPage='blog'pageUrl='blog'/>
       <BlogListing/>
       <ProductSection/>
     </div>

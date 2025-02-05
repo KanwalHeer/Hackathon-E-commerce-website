@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { loadCartFromLocalStorage, loadWishlistFromLocalStorage, saveCartToLocalStorage, saveWishlistToLocalStorage } from '@/app/utils/localstorage';
+import { loadCartFromLocalStorage, loadWishlistFromLocalStorage, saveCartToLocalStorage, saveWishlistToLocalStorage,loadCompareFromLocalStorage, saveCompareToLocalStorage } from '@/app/utils/localstorage';
 
 interface CartItem {
   _id: string;
@@ -12,11 +12,13 @@ interface CartState {
   items: CartItem[];
   wishlist: CartItem[];
   totalQuantity: number;
+  compare: CartItem[];
 }
 
 const initialState: CartState = {
-  ...loadCartFromLocalStorage(), // Load both items and totalQuantity from localStorage
-  wishlist: loadWishlistFromLocalStorage(), // Load wishlist from localStorage
+  ...loadCartFromLocalStorage(),
+  wishlist: loadWishlistFromLocalStorage(), 
+  compare: loadCompareFromLocalStorage()
 };
 
 const cartSlice = createSlice({
@@ -32,7 +34,7 @@ const cartSlice = createSlice({
       }
       // Recalculate total quantity
       state.totalQuantity = state.items.reduce((total, item) => total + item.quantity, 0);
-      saveCartToLocalStorage({ items: state.items, totalQuantity: state.totalQuantity }); // Save both to localStorage
+      saveCartToLocalStorage({ items: state.items, totalQuantity: state.totalQuantity });
     },
 
     updateCartItem(state, action: PayloadAction<CartItem>) {
@@ -41,7 +43,7 @@ const cartSlice = createSlice({
         state.items[index] = action.payload;
         // Recalculate total quantity
         state.totalQuantity = state.items.reduce((total, item) => total + item.quantity, 0);
-        saveCartToLocalStorage({ items: state.items, totalQuantity: state.totalQuantity }); // Save both to localStorage
+        saveCartToLocalStorage({ items: state.items, totalQuantity: state.totalQuantity }); 
       }
     },
 
@@ -49,24 +51,42 @@ const cartSlice = createSlice({
       state.items = state.items.filter(item => item._id !== action.payload);
       // Recalculate total quantity
       state.totalQuantity = state.items.reduce((total, item) => total + item.quantity, 0);
-      saveCartToLocalStorage({ items: state.items, totalQuantity: state.totalQuantity }); // Save both to localStorage
-    },
+      saveCartToLocalStorage({ items: state.items, totalQuantity: state.totalQuantity });     },
 
     // Add item to wishlist
     addToWishlist(state, action: PayloadAction<CartItem>) {
       if (!state.wishlist.some(item => item._id === action.payload._id)) {
         state.wishlist.push(action.payload);
-        saveWishlistToLocalStorage(state.wishlist); // Save to localStorage
+        saveWishlistToLocalStorage(state.wishlist); 
       }
     },
 
     // Remove item from wishlist
     removeFromWishlist(state, action: PayloadAction<string>) {
       state.wishlist = state.wishlist.filter(item => item._id !== action.payload);
-      saveWishlistToLocalStorage(state.wishlist); // Save to localStorage
+      saveWishlistToLocalStorage(state.wishlist);
+    },
+    // Add product to compare list
+    addToCompare(state, action: PayloadAction<CartItem>) {
+      if (!state.compare.some(item => item._id === action.payload._id)) {
+        state.compare.push(action.payload);
+        saveCompareToLocalStorage(state.compare); 
+      }
+    },
+
+    // Remove product from compare list
+    removeFromCompare(state, action: PayloadAction<string>) {
+      state.compare = state.compare.filter(item => item._id !== action.payload);
+      saveCompareToLocalStorage(state.compare); 
+    },
+
+    // Clear all products from the compare list
+    clearCompare(state) {
+      state.compare = [];
+      saveCompareToLocalStorage(state.compare); 
     },
   },
 });
 
-export const { addToCart, updateCartItem, removeFromCart, addToWishlist, removeFromWishlist } = cartSlice.actions;
+export const { addToCart, updateCartItem, removeFromCart, addToWishlist, removeFromWishlist,addToCompare,removeFromCompare,clearCompare } = cartSlice.actions;
 export default cartSlice.reducer;

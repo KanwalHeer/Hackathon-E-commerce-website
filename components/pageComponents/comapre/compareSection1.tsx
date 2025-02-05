@@ -1,142 +1,89 @@
 "use client";
-import React, { useState } from "react";
-import { FaChevronDown } from "react-icons/fa";
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { removeFromCompare } from "@/redux/cartSlice";
 import Image from "next/image";
+import { TbArrowsRightLeft } from "react-icons/tb";
+import Link from "next/link";
 
-const CompareSection1 = () => {
-  const [showDropdown, setShowDropdown] = useState(false);
+// The Compare Page
+const ComparePage = () => {
+  const dispatch = useDispatch();
+  const compareProducts = useSelector((state: any) => state.cart.compare);
 
-  const toggleDropdown = () => {
-    setShowDropdown((prevState) => !prevState);
+  // Remove from Compare Handler
+  const handleRemoveFromCompare = (productId: string) => {
+    dispatch(removeFromCompare(productId));
   };
 
   return (
-    <div className="max-w-[1300px] mx-auto py-8 mt-8">
-      <ul className=" flex flex-col md:flex-row lg:flex-row  justify-center gap-8 px-4">
-        {/* First Section: Heading + View More Link */}
-        <div className="w-full md:w-1/4 ">
-          <h2 className="text-3xl font-semibold mb-4">
-            Go to product page for get more products
-          </h2>
-          <a
-            href="#view-more"
-            className="text-gray-600 text-lg border-b border-gray-600 text-center"
-          >
-            View more
-          </a>
-        </div>
-
-        {/* First Product */}
-        <div className="w-full md:w-1/4 text-center">
-          <Image
-            src="/item3.png"
-            alt="Product 1"
-            className="w-full h-48 object-cover rounded-md mb-4"
-            height={500}
-            width={300}
-          />
-          <h3 className="font-semibold text-lg mb-2">Product Name 1</h3>
-          <p className="text-gray-800 mb-2">$99.99</p>
-          <div className="flex justify-center items-center text-yellow-500">
-            {/* Display rating, assume 4 stars for this example */}
-            <span>⭐⭐⭐⭐</span>
+    <div className="py-12 mx-4">
+      <div className="max-w-[1200px] mx-auto">
+        {compareProducts.length === 0 ? (
+          <div className="text-center text-xl font-bold text-gray-700">
+            No products in compare list.
           </div>
-        </div>
-
-        {/* Second Product */}
-        <div className="w-full md:w-1/4 text-center">
-          <Image
-            src="/item3.png"
-            alt="Product 2"
-            className="w-full h-48 object-cover rounded-md mb-4"
-            height={300}
-            width={500}
-          />
-          <h3 className="font-semibold text-lg mb-2">Product Name 2</h3>
-          <p className="text-gray-800 mb-2">$129.99</p>
-          <div className="flex justify-center items-center text-yellow-500">
-            {/* Display rating, assume 3.5 stars for this example */}
-            <span>⭐⭐⭐⭐</span>
-          </div>
-        </div>
-
-        {/* Add Product Section */}
-        <div className=" md:w-1/4">
-          <h2 className="text-xl font-semibold mb-4">Add Product</h2>
-
-          <button
-            onClick={toggleDropdown}
-            className=" py-2 px-4 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-colors flex items-center justify-between"
-          >
-            Choose a product
-            {/* Adding the down arrow icon */}
-            <FaChevronDown className="w-5 h-5 ml-2 text-white" />
-          </button>
-
-          {/* Dropdown for Product Selection */}
-          {showDropdown && (
-            <div className="mt-4 bg-white shadow-lg rounded-md p-4  z-50  ">
-              {/* Static Product Options */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-4">
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+            {compareProducts.map((product: any) => (
+              <div
+                key={product._id}
+                className="bg-white shadow-lg rounded-lg overflow-hidden relative"
+              >
+                {/* Product Image */}
+                <div className="relative w-full h-60">
                   <Image
-                    src="/item3.png"
-                    alt="Product 1"
-                    className="w-16 h-16 object-cover rounded-md"
-                    height={100}
-                    width={100}
+                    src={product.productImage?.asset?.url}
+                    alt={product.title}
+                    width={300}
+                    height={300}
+                    className="w-full h-full object-cover"
                   />
-                  <div>
-                    <h3 className="font-semibold text-sm">Product Name 1</h3>
-                    <p className="text-gray-600">$99.99</p>
-                  </div>
                 </div>
-                <div className="flex items-center gap-4">
-                  <Image
-                    src="/item3.png"
-                    alt="Product 2"
-                    className="w-16 h-16 object-cover rounded-md"
-                    height={100}
-                    width={100}
-                  />
-                  <div>
-                    <h3 className="font-semibold text-sm">Product Name 2</h3>
-                    <p className="text-gray-600">$129.99</p>
+                <div className="p-6">
+                  <h3 className="text-lg font-bold text-gray-800 mb-1">
+                    {product.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-4">
+                    {product.description}
+                  </p>
+                  <p className="text-xl font-semibold text-gray-800 mb-4">
+                    ${product.price}
+                  </p>
+
+                  {/* Compare Icon */}
+                  <div className="text-center mt-4">
+                    <span className="text-xl text-gray-500">
+                      <TbArrowsRightLeft />
+                    </span>
                   </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <Image
-                    src="/item3.png"
-                    alt="Product 3"
-                    className="w-16 h-16 object-cover rounded-md"
-                    height={100}
-                    width={100}
-                  />
-                  <div>
-                    <h3 className="font-semibold text-sm">Product Name 3</h3>
-                    <p className="text-gray-600">$149.99</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <Image
-                    src="/item3.png"
-                    alt="Product 4"
-                    className="w-16 h-16 object-cover rounded-md"
-                    height={100}
-                    width={100}
-                  />
-                  <div>
-                    <h3 className="font-semibold text-sm">Product Name 4</h3>
-                    <p className="text-gray-600">$179.99</p>
+
+                  {/* Remove from Compare Button */}
+                  <div className="text-center mt-4">
+                    <button
+                      onClick={() => handleRemoveFromCompare(product._id)}
+                      className="py-2 px-4 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                    >
+                      Remove from Compare
+                    </button>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
+            ))}
+          </div>
+        )}
+
+        {/* Button to go back to Products */}
+        <div className="flex justify-center mt-8">
+          <Link href="/products">
+            <button className="py-2 px-4 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors">
+              Back to Products
+            </button>
+          </Link>
         </div>
-      </ul>
+      </div>
     </div>
   );
 };
 
-export default CompareSection1;
+export default ComparePage;

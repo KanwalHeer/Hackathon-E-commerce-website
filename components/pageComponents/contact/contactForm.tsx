@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { FaMapMarkerAlt, FaPhoneAlt, FaClock } from "react-icons/fa";
+import emailjs from 'emailjs-com';
 
 const ContactPage: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -9,6 +10,8 @@ const ContactPage: React.FC = () => {
     subject: "",
     message: "",
   });
+
+  const [status, setStatus] = useState("");
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -22,7 +25,22 @@ const ContactPage: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted", formData);
+    setStatus("Sending...");
+
+    emailjs.send(
+      'service_rusgf3f', // Your EmailJS service ID
+      'template_ppgjv8m', // Your EmailJS template ID
+      formData,
+      'NqUYJsuWwIMmFHzk3' // Your EmailJS User ID
+    )
+    .then((response:any) => {
+      setStatus("Message sent successfully!");
+      console.log("Success:", response);
+      setFormData({ name: "", email: "", subject: "", message: "" });
+    }, (error:any) => {
+      setStatus("Failed to send message, please try again.");
+      console.log("Failed:", error);
+    });
   };
 
   return (
@@ -148,6 +166,7 @@ const ContactPage: React.FC = () => {
               </button>
             </div>
           </form>
+          {status && <p className="mt-4 text-center">{status}</p>}
         </div>
       </div>
     </div>

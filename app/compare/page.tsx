@@ -9,9 +9,6 @@ export default function ProductComparision() {
     <div>
        <Banner imageUrl='/item3.png' pageTitle='Product Comparision' currentPage='compare'pageUrl='compare'/>
        <CompareSection1/>
-       <ComparisonSection2/>
-       <ProductSection2/>
-     
     </div>
   )
 }

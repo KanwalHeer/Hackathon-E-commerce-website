@@ -1,7 +1,5 @@
 "use client";
 import React, { useState } from "react";
-
-/// types.ts
 export interface ProductImage {
   asset: {
     _id: string;
@@ -17,7 +15,7 @@ export interface Product {
   price: number;
   tags: string[];
   dicountPercentage?: number;
-  isNew?: boolean; 
+  isNew?: boolean;
 }
 
 // Component
@@ -46,16 +44,7 @@ const ProductDetail2: React.FC<any> = ({ product }) => {
         >
           Description
         </button>
-        <button
-          onClick={() => handleTabChange("additionalInfo")}
-          className={`px-4 py-2 text-[12px] lg:text-xl font-medium ${
-            activeTab === "additionalInfo"
-              ? "text-black border-b-2 border-black"
-              : "text-gray-400"
-          }`}
-        >
-          Additional Info
-        </button>
+
         <button
           onClick={() => handleTabChange("reviews")}
           className={`px-4 py-2 text-[12px] lg:text-xl font-medium ${
@@ -72,62 +61,13 @@ const ProductDetail2: React.FC<any> = ({ product }) => {
       {activeTab === "description" && (
         <div className="tab-content">
           <p className="text-gray-700 text-sm mb-4">{product.description}</p>
-        
         </div>
       )}
-{/* 
-      {activeTab === "additionalInfo" && (
+         {activeTab === "reviews" && (
         <div className="tab-content">
-          <ul className="space-y-2">
-            <li>
-              <strong className="font-medium">Material:</strong>{" "}
-              {product.additionalInfo.material}
-            </li>
-            <li>
-              <strong className="font-medium">Warranty:</strong>{" "}
-              {product.additionalInfo.warranty}
-            </li>
-            <li>
-              <strong className="font-medium">Shipping Info:</strong>{" "}
-              {product.additionalInfo.shippingInfo}
-            </li>
-            <li>
-              <strong className="font-medium">Care Instructions:</strong>{" "}
-              {product.additionalInfo.careInstructions}
-            </li>
-            <li>
-              <strong className="font-medium">Origin:</strong>{" "}
-              {product.additionalInfo.origin}
-            </li>
-            <li>
-              <strong className="font-medium">Assembly Required:</strong>{" "}
-              {product.additionalInfo.assemblyRequired}
-            </li>
-          </ul>
+          <p className="text-gray-700  mb-4 text-center text-xl mt-8 font-semibold">No Reviews</p>
         </div>
-      )} */}
-
-      {/* {activeTab === "reviews" && (
-        <div className="tab-content">
-          <h3 className="text-xl font-semibold mb-4">
-            Reviews ({product.reviews})
-          </h3>
-          <div className="reviews space-y-4">
-            {product.reviewDetail.map((review, index) => (
-              <div key={index} className="review border-b pb-4">
-                <p className="font-medium">
-                  {review.user}
-                  <span className="text-yellow-400">
-                    {"★".repeat(review.rating)}
-                    {"☆".repeat(5 - review.rating)}
-                  </span>
-                </p>
-                <p className="text-gray-600">{review.reviewText}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )} */}
+      )}
     </div>
   );
 };

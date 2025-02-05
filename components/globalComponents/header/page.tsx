@@ -8,6 +8,7 @@ import { AiOutlineShoppingCart } from "react-icons/ai";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { FiLogOut } from "react-icons/fi";
+import { TbArrowsRightLeft } from "react-icons/tb";
 import {
   FaHome,
   FaShoppingBag,
@@ -16,7 +17,7 @@ import {
   FaUser,
 } from "react-icons/fa";
 import Image from "next/image";
-import {  useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { client } from "@/sanity/lib/client";
 import { RootState } from "@/redux/store";
 
@@ -35,28 +36,24 @@ const Header: React.FC = () => {
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const wishlistItems = useSelector((state: RootState) => state.cart.wishlist);
   const totalQuantity = useSelector((state: any) => state.cart.totalQuantity);
-  const [isHovered, setIsHovered] = useState(false); 
+  const [isHovered, setIsHovered] = useState(false);
   if (typeof window !== "undefined") {
-  if (document.cookie.includes("next-auth.session-token")) {
-    console.log("Token is present in document.cookie");
-  } else {
-    console.log("Token is not found in document.cookie");
-  }
+    if (document.cookie.includes("next-auth.session-token")) {
+      console.log("Token is present in document.cookie");
+    } else {
+      console.log("Token is not found in document.cookie");
+    }
   }
 
   const handleLogout = async () => {
-    handleClick()
+    handleClick();
     await signOut({ redirect: false });
-    // toggleMenu()
     router.push("/auth/sign-in");
-
     if (typeof window !== "undefined") {
       localStorage.removeItem("chechoutRoute");
     }
-    //  toggleMenu()
   };
 
- 
   const handleClick = () => {
     setIsHovered(false);
   };
@@ -87,12 +84,6 @@ const Header: React.FC = () => {
       });
   }, []);
 
-
-
-  
- 
-
-
   // Function to handle search
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
@@ -106,16 +97,13 @@ const Header: React.FC = () => {
     setFilteredProducts(filtered);
   };
 
-
   useEffect(() => {
     setMounted(true);
   }, []);
 
-
   if (!mounted) {
-    return null; 
+    return null;
   }
-  
 
   const onDetail = () => {
     setDetail(true);
@@ -163,41 +151,47 @@ const Header: React.FC = () => {
           >
             Contact
           </Link>
+          <Link
+            href="/compare"
+            className="hover:text-gray-800 font-semibold hover:underline"
+          >
+            Compare
+          </Link>
         </nav>
         <nav className="hidden md:flex space-x-9">
           <div></div>
           {session ? (
-          <div className="text-yellow-600 font-bold text-[16px] md:text-[16px] lg:text-[20px] flex justify-center flex-row gap-2 md:gap-0 mb-2 relative">
-          {/* User's name and dropdown menu container */}
-          <div
-            onMouseEnter={() => setIsHovered(true)} // Show dropdown on hover
-            // onMouseLeave={() => setIsHovered(false)} // Hide dropdown when not hovered
-            className="cursor-pointer relative"
-          >
-            <div onClick={handleClick}>{session.user?.name}</div>
-            
-            {/* Floating Menu */}
-            {isHovered && (
-              <div className="absolute top-full mt-2 right-0 bg-white border border-gray-300 rounded-md shadow-lg w-[150px]">
-                <ul className="list-none p-2">
-                  {/* Dashboard Link */}
-                  <li className="p-2 hover:bg-gray-200 rounded-md" onClick={handleClick}>
-                    <Link href="/dashboard">
-                      Dashboard
-                    </Link>
-                  </li>
-                  {/* Logout Link */}
-                  <button className="p-2 hover:bg-gray-200 rounded-md" onClick={handleLogout}>
-                   
-                     Logout
-                   
-                  </button>
-                </ul>
+            <div className="text-yellow-600 font-bold text-[16px] md:text-[16px] lg:text-[20px] flex justify-center flex-row gap-2 md:gap-0 mb-2 relative">
+              {/* User's name and dropdown menu container */}
+              <div
+                onMouseEnter={() => setIsHovered(true)}
+                className="cursor-pointer relative"
+              >
+                <div onClick={handleClick}>{session.user?.name}</div>
+
+                {/* Floating Menu */}
+                {isHovered && (
+                  <div className="absolute top-full mt-2 right-0 bg-white border border-gray-300 rounded-md shadow-lg w-[150px]">
+                    <ul className="list-none p-2">
+                      {/* Dashboard Link */}
+                      <li
+                        className="p-2 hover:bg-gray-200 rounded-md"
+                        onClick={handleClick}
+                      >
+                        <Link href="/dashboard">Dashboard</Link>
+                      </li>
+                      {/* Logout Link */}
+                      <button
+                        className="p-2 hover:bg-gray-200 rounded-md"
+                        onClick={handleLogout}
+                      >
+                        Logout
+                      </button>
+                    </ul>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-        </div>
-         
+            </div>
           ) : (
             <Link
               href="/auth/sign-in"
@@ -218,12 +212,16 @@ const Header: React.FC = () => {
                 <GoHeart />
               </Link>
 
-              <Link href="/cart" className="relative" onClick={catchRouteHandler}>
-            <AiOutlineShoppingCart className="text-[24px] hover:underline" />
-              <span className="absolute -top-4 right-3 inline-block bg-yellow-600 text-white text-[10px] px-2 py-1 rounded-full">
-                {totalQuantity}
-            </span>
-          </Link>
+              <Link
+                href="/cart"
+                className="relative"
+                onClick={catchRouteHandler}
+              >
+                <AiOutlineShoppingCart className="text-[24px] hover:underline" />
+                <span className="absolute -top-4 right-3 inline-block bg-yellow-600 text-white text-[10px] px-2 py-1 rounded-full">
+                  {totalQuantity}
+                </span>
+              </Link>
             </>
           )}
         </nav>
@@ -263,11 +261,11 @@ const Header: React.FC = () => {
           />
           <Link href="/cart" className="relative" onClick={catchRouteHandler}>
             <AiOutlineShoppingCart className="text-[24px] hover:underline" />
-              <span className="absolute -top-4 right-3 inline-block bg-yellow-600 text-white text-[10px] px-2 py-1 rounded-full">
-                {totalQuantity}
+            <span className="absolute -top-4 right-3 inline-block bg-yellow-600 text-white text-[10px] px-2 py-1 rounded-full">
+              {totalQuantity}
             </span>
           </Link>
-          
+
           <Link
             href="/wishList"
             className="relative text-[24px] hover:underline"
@@ -355,6 +353,14 @@ const Header: React.FC = () => {
               <FaPhoneAlt />
               <span>Contact</span>
             </Link>
+            <Link
+              href="/compare"
+              className="flex items-center gap-2 hover:text-gray-800 hover:underline text-center"
+              onClick={toggleMenu}
+            >
+              <TbArrowsRightLeft />
+              <span>Compare</span>
+            </Link>
             {session ? (
               <>
                 <div
@@ -371,12 +377,12 @@ const Header: React.FC = () => {
                   )}
                 </div>
                 <button
-              className="flex items-center gap-2 hover:text-gray-800 hover:underline text-center "
-              onClick={handleLogout}
-            >
-              <FiLogOut />
-              <span onClick={toggleMenu}>Logout</span>
-            </button>
+                  className="flex items-center gap-2 hover:text-gray-800 hover:underline text-center "
+                  onClick={handleLogout}
+                >
+                  <FiLogOut />
+                  <span onClick={toggleMenu}>Logout</span>
+                </button>
               </>
             ) : (
               <>
@@ -390,8 +396,7 @@ const Header: React.FC = () => {
                 </Link>
               </>
             )}
-            
-           
+
             {/* } */}
           </nav>
         </div>
