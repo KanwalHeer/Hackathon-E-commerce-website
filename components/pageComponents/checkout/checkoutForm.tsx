@@ -11,6 +11,8 @@ import { postOrderData } from "@/helper/placeOrder";
 import { useSession } from "next-auth/react";
 import { createClient } from "@sanity/client";
 import dotenv from "dotenv";
+import { useDispatch } from 'react-redux';
+import { clearCart } from "@/redux/cartSlice";
 
 interface ShipToAddress {
   name: string;
@@ -39,6 +41,7 @@ const CheckoutForm: React.FC = () => {
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [isOrder, setIsOrder] = useState(false);
   const { data: session } = useSession();
+  const dispatch = useDispatch()
   dotenv.config();
 
 
@@ -218,6 +221,7 @@ const CheckoutForm: React.FC = () => {
       };
       await postOrderData(placedOrder);
     }
+    dispatch(clearCart());
   };
 
 

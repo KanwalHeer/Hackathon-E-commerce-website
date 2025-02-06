@@ -53,6 +53,13 @@ const cartSlice = createSlice({
       state.totalQuantity = state.items.reduce((total, item) => total + item.quantity, 0);
       saveCartToLocalStorage({ items: state.items, totalQuantity: state.totalQuantity });     },
 
+      clearCart(state) {
+        state.items = [];
+        state.totalQuantity = 0;
+        saveCartToLocalStorage({ items: [], totalQuantity: 0 });
+      },
+      
+
     // Add item to wishlist
     addToWishlist(state, action: PayloadAction<CartItem>) {
       if (!state.wishlist.some(item => item._id === action.payload._id)) {
@@ -88,5 +95,5 @@ const cartSlice = createSlice({
   },
 });
 
-export const { addToCart, updateCartItem, removeFromCart, addToWishlist, removeFromWishlist,addToCompare,removeFromCompare,clearCompare } = cartSlice.actions;
+export const { addToCart, updateCartItem, removeFromCart, addToWishlist, removeFromWishlist,addToCompare,removeFromCompare,clearCompare,clearCart } = cartSlice.actions;
 export default cartSlice.reducer;
